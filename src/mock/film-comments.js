@@ -1,5 +1,6 @@
 import dayjs from 'dayjs';
-import {MAX_COMMENTS, MAX_ID_NUMBER} from '../const.js';
+import {nanoid} from 'nanoid';
+import {MAX_COMMENTS} from '../const.js';
 import {getRandomNumber, humanizeDate} from '../utils.js';
 
 const generateCommentEmotion = () => {
@@ -46,22 +47,8 @@ const generateCommentMessage = () => {
   return messages[randomIndex];
 };
 
-const IdList = new Set();
-
-const generateId = () => {
-  const id = getRandomNumber(0, MAX_ID_NUMBER);
-
-  if (!IdList.has(id)) {
-    IdList.add(id);
-
-    return id;
-  } else {
-    generateId();
-  }
-};
-
 const generateComment = () => ({
-  id: generateId(),
+  id: nanoid(),
   emotion: generateCommentEmotion(),
   date: generateCommentDate(),
   author: generateCommentAuthor(),
@@ -69,9 +56,9 @@ const generateComment = () => ({
 });
 
 export const generateComments = () => {
-  const QuantityComments = getRandomNumber(0, MAX_COMMENTS);
+  const quantityComments = getRandomNumber(0, MAX_COMMENTS);
   const comments = [];
-  for (let i = 0; i < QuantityComments; i++) {
+  for (let i = 0; i < quantityComments; i++) {
     const comment = generateComment();
     comments.push(comment);
   }

@@ -1,4 +1,6 @@
-export const createProfileTemplate = (cards) => {
+import {createElement} from '../utils.js';
+
+const createProfileTemplate = (cards) => {
 
   const getProfileRating = () => {
     let profileStatus = '';
@@ -30,3 +32,26 @@ export const createProfileTemplate = (cards) => {
     <img class="profile__avatar" src="images/bitmap@2x.png" alt="Avatar" width="35" height="35">
   </section>`;
 };
+
+export default class Profile {
+  constructor(cards) {
+    this._cards = cards;
+    this._element = null;
+  }
+
+  getTemplate() {
+    return createProfileTemplate(this._cards);
+  }
+
+  getElement() {
+    if (!this._element) {
+      this._element = createElement(this.getTemplate());
+    }
+
+    return this._element;
+  }
+
+  removeElement() {
+    this._element = null;
+  }
+}

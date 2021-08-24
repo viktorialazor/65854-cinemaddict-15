@@ -1,4 +1,6 @@
-export const createNavigationTemplate = (cards) => {
+import {createElement} from '../utils.js';
+
+const createNavigationTemplate = (cards) => {
   const watchlist = cards.slice().filter((card) => card.isInWatchlist);
   const history = [];
   cards.forEach((card) => {
@@ -20,3 +22,26 @@ export const createNavigationTemplate = (cards) => {
     <a href="#stats" class="main-navigation__additional">Stats</a>
   </nav>`;
 };
+
+export default class Navigation {
+  constructor(cards) {
+    this._cards = cards;
+    this._element = null;
+  }
+
+  getTemplate() {
+    return createNavigationTemplate(this._cards);
+  }
+
+  getElement() {
+    if (!this._element) {
+      this._element = createElement(this.getTemplate());
+    }
+
+    return this._element;
+  }
+
+  removeElement() {
+    this._element = null;
+  }
+}
