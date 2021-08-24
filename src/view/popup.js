@@ -1,4 +1,6 @@
-export const createPopupTemplate = (data) => {
+import {createElement} from '../utils.js';
+
+const createPopupTemplate = (data) => {
   const card = data[0];
   const comments = data[1];
 
@@ -52,9 +54,9 @@ export const createPopupTemplate = (data) => {
     genresList += `<span class="film-details__genre">${item}</span>`;
   });
   const genresTitle = genres.length > 1 ? 'Genres' : 'Genre';
-  const watchlist = isInWatchlist ? 'film-card__controls-item--active ' : '';
-  const watched = isWatched ? 'film-card__controls-item--active ' : '';
-  const favorites = isInFavorites ? 'film-card__controls-item--active ' : '';
+  const watchlist = isInWatchlist ? 'film-details__control-button--active ' : '';
+  const watched = isWatched ? 'film-details__control-button--active ' : '';
+  const favorites = isInFavorites ? 'film-details__control-button--active ' : '';
 
   return `<section class="film-details">
     <form class="film-details__inner" action="" method="get">
@@ -117,9 +119,9 @@ export const createPopupTemplate = (data) => {
         </div>
 
         <section class="film-details__controls">
-          <button type="button" class="${watchlist}film-details__control-button film-details__control-button--watchlist" id="watchlist" name="watchlist">Add to watchlist</button>
-          <button type="button" class="${watched}film-details__control-button film-details__control-button--active film-details__control-button--watched" id="watched" name="watched">Already watched</button>
-          <button type="button" class="${favorites}film-details__control-button film-details__control-button--favorite" id="favorite" name="favorite">Add to favorites</button>
+          <button type="button" class="film-details__control-button ${watchlist}film-details__control-button--watchlist" id="watchlist" name="watchlist">Add to watchlist</button>
+          <button type="button" class="film-details__control-button ${watched}film-details__control-button--watched" id="watched" name="watched">Already watched</button>
+          <button type="button" class="film-details__control-button ${favorites}film-details__control-button--favorite" id="favorite" name="favorite">Add to favorites</button>
         </section>
       </div>
 
@@ -163,3 +165,26 @@ export const createPopupTemplate = (data) => {
     </form>
   </section>`;
 };
+
+export default class Popup {
+  constructor(data) {
+    this._data = data;
+    this._element = null;
+  }
+
+  getTemplate() {
+    return createPopupTemplate(this._data);
+  }
+
+  getElement() {
+    if (!this._element) {
+      this._element = createElement(this.getTemplate());
+    }
+
+    return this._element;
+  }
+
+  removeElement() {
+    this._element = null;
+  }
+}

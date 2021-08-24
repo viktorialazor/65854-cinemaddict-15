@@ -1,3 +1,4 @@
+import {nanoid} from 'nanoid';
 import {MIN_RATING, MAX_RATING, MIN_DESCRIPTIONS, MAX_DESCRIPTIONS} from '../const.js';
 import {getRandomNumber, changeFormatDate, durationFilm} from '../utils.js';
 
@@ -156,6 +157,7 @@ export const generateFilmCard = (index, comments) => {
   const date = generateDate(index);
 
   return {
+    id: nanoid(),
     poster: generatePoster(index),
     title: generateTitle(index),
     originalTitle: generateTitle(index),
