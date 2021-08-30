@@ -1,45 +1,6 @@
 import dayjs from 'dayjs';
 import relativeTime from 'dayjs/plugin/relativeTime';
-import {MAX_SHORT_DESCRIPTIONS, MINUTES_IN_HOUR} from './const.js';
-
-const RenderPosition = {
-  AFTERBEGIN: 'afterbegin',
-  BEFOREEND: 'beforeend',
-};
-
-const render = (container, element, place) => {
-  switch (place) {
-    case RenderPosition.AFTERBEGIN:
-      container.prepend(element);
-      break;
-    case RenderPosition.BEFOREEND:
-      container.append(element);
-      break;
-  }
-};
-
-const createElement = (template) => {
-  const newElement = document.createElement('div');
-  newElement.innerHTML = template;
-
-  return newElement.firstChild;
-};
-
-// Функция из интернета по генерации случайного числа из диапазона
-// Источник - https://github.com/you-dont-need/You-Dont-Need-Lodash-Underscore#_random
-const getRandomNumber = (a = 0, b = 1, floating = 'false') => {
-  const lower = Math.ceil(Math.min(a, b));
-  const upper = Math.floor(Math.max(a, b));
-  let result = 0;
-
-  if (floating === 'true') {
-    result = Math.round((lower + Math.random() * (upper - lower))*10)/10;
-  } else {
-    result = Math.floor(lower + Math.random() * (upper - lower + 1));
-  }
-
-  return result;
-};
+import {MAX_SHORT_DESCRIPTIONS, MINUTES_IN_HOUR} from '../const.js';
 
 const humanizeDate = (date) => {
   dayjs.extend(relativeTime);
@@ -93,4 +54,4 @@ const getPopupData = (card, commentsList) => {
   return [card, filmComments];
 };
 
-export {RenderPosition, render, createElement, getRandomNumber, humanizeDate, changeFormatDate, durationFilm, generateShortDescription, getPopupData};
+export {humanizeDate, changeFormatDate, durationFilm, generateShortDescription, getPopupData};

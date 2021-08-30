@@ -1,4 +1,5 @@
-import {createElement, changeFormatDate, generateShortDescription} from '../utils.js';
+import {changeFormatDate, generateShortDescription} from '../utils/film.js';
+import AbstractView from './abstract.js';
 
 const createFilmCardTemplate = (card = {}) => {
   const {
@@ -42,25 +43,26 @@ const createFilmCardTemplate = (card = {}) => {
   </article>`;
 };
 
-export default class FilmCard {
+export default class FilmCard extends AbstractView {
   constructor(card) {
+    super();
     this._card = card;
-    this._element = null;
+    this._openPopupHandler = this._openPopupHandler.bind(this);
   }
 
   getTemplate() {
     return createFilmCardTemplate(this._card);
   }
 
-  getElement() {
-    if (!this._element) {
-      this._element = createElement(this.getTemplate());
-    }
-
-    return this._element;
+  _openPopupHandler(evt) {
+    evt.preventDefault();
+    this._callback.openDetailsPopup();
   }
 
-  removeElement() {
-    this._element = null;
+  setOpenPopupHandler(callback) {
+    this._callback.openDetailsPopup = callback;
+    this.getElement().querySelector('.film-card__poster').addEventListener('click', this._openPopupHandler);
+    this.getElement().querySelector('.film-card__title').addEventListener('click', this._openPopupHandler);
+    this.getElement().querySelector('.film-card__comments').addEventListener('click', this._openPopupHandler);
   }
 }

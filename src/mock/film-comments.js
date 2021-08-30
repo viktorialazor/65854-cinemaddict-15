@@ -1,7 +1,8 @@
 import dayjs from 'dayjs';
 import {nanoid} from 'nanoid';
 import {MAX_COMMENTS} from '../const.js';
-import {getRandomNumber, humanizeDate} from '../utils.js';
+import {getRandomNumber} from '../utils/common.js';
+import {humanizeDate} from '../utils/film.js';
 
 const generateCommentEmotion = () => {
   const emotions = ['angry.png', 'puke.png', 'sleeping.png', 'smile.png'];

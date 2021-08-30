@@ -1,6 +1,7 @@
 import {nanoid} from 'nanoid';
 import {MIN_RATING, MAX_RATING, MIN_DESCRIPTIONS, MAX_DESCRIPTIONS} from '../const.js';
-import {getRandomNumber, changeFormatDate, durationFilm} from '../utils.js';
+import {getRandomNumber} from '../utils/common.js';
+import {changeFormatDate, durationFilm} from '../utils/film.js';
 
 const generatePoster = (index) => {
   const images = [

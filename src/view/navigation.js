@@ -1,4 +1,4 @@
-import {createElement} from '../utils.js';
+import AbstractView from './abstract.js';
 
 const createNavigationTemplate = (cards) => {
   const watchlist = cards.slice().filter((card) => card.isInWatchlist);
@@ -23,25 +23,13 @@ const createNavigationTemplate = (cards) => {
   </nav>`;
 };
 
-export default class Navigation {
+export default class Navigation extends AbstractView {
   constructor(cards) {
+    super();
     this._cards = cards;
-    this._element = null;
   }
 
   getTemplate() {
     return createNavigationTemplate(this._cards);
-  }
-
-  getElement() {
-    if (!this._element) {
-      this._element = createElement(this.getTemplate());
-    }
-
-    return this._element;
-  }
-
-  removeElement() {
-    this._element = null;
   }
 }
