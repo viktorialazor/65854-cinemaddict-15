@@ -54,4 +54,8 @@ const getPopupData = (card, commentsList) => {
   return [card, filmComments];
 };
 
-export {humanizeDate, changeFormatDate, durationFilm, generateShortDescription, getPopupData};
+const sortFilmsDate = (filmA, filmB) => dayjs(filmA.release).diff(dayjs(filmB.release));
+
+const sortFilmsRating = (filmA, filmB) => filmB.rating - filmA.rating;
+
+export {humanizeDate, changeFormatDate, durationFilm, generateShortDescription, getPopupData, sortFilmsDate, sortFilmsRating};

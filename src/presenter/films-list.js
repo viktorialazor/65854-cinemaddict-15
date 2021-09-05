@@ -1,5 +1,6 @@
-import {QUANTITY_CARDS_PER_STEP, QUANTITY_EXTRA_CARDS} from '../const.js';
+import {QUANTITY_CARDS_PER_STEP, QUANTITY_EXTRA_CARDS, SortType} from '../const.js';
 import {RenderPosition, render, remove} from '../utils/render.js';
+import {sortFilmsDate, sortFilmsRating} from '../utils/film.js';
 import {updateItem} from '../utils/common.js';
 import SortView from '../view/sort.js';
 import FilmsView from '../view/films.js';
@@ -22,6 +23,7 @@ export default class FilmsList {
     this._filmPresenter = new Map();
     this._filmRatedPresenter = new Map();
     this._filmCommentedPresenter = new Map();
+    this._currentSortType = SortType.DEFAULT;
 
     this._sortComponent = new SortView();
     this._filmsComponent = new FilmsView();
@@ -31,10 +33,12 @@ export default class FilmsList {
     this._handleCardChange = this._handleCardChange.bind(this);
     this._handleModeChange = this._handleModeChange.bind(this);
     this._handleShowMoreButtonClick = this._handleShowMoreButtonClick.bind(this);
+    this._handleSortTypeChange = this._handleSortTypeChange.bind(this);
   }
 
   init(filmsCards, filmsComments) {
     this._filmsCards = filmsCards.slice();
+    this._sourcedFilmsCards = filmsCards.slice();
     this._filmsComments = filmsComments.slice();
 
     render(this._mainContainer, this._filmsComponent, RenderPosition.BEFOREEND);
@@ -43,8 +47,56 @@ export default class FilmsList {
     this._renderFilmsBoard();
   }
 
+  _sortFilms(sortType) {
+    this._deleteSortActiveClass();
+    this._setSortActiveClass(sortType);
+
+    switch (sortType) {
+      case SortType.DATE:
+        this._filmsCards.sort(sortFilmsDate);
+        break;
+      case SortType.RATING:
+        this._filmsCards.sort(sortFilmsRating);
+        break;
+      default:
+        this._filmsCards = this._sourcedFilmsCards.slice();
+    }
+
+    this._currentSortType = sortType;
+  }
+
+  _deleteSortActiveClass() {
+    this._sortComponent.getElement().querySelectorAll('[data-sort-type]').forEach((a) => {
+      a.classList.remove('sort__button--active');
+    });
+  }
+
+  _setSortActiveClass(sortType) {
+    switch (sortType) {
+      case SortType.DATE:
+        this._sortComponent.getElement().querySelector('[data-sort-type="date"]').classList.add('sort__button--active');
+        break;
+      case SortType.RATING:
+        this._sortComponent.getElement().querySelector('[data-sort-type="rating"]').classList.add('sort__button--active');
+        break;
+      default:
+        this._sortComponent.getElement().querySelector('[data-sort-type="default"]').classList.add('sort__button--active');
+    }
+  }
+
+  _handleSortTypeChange(sortType) {
+    if (this._currentSortType === sortType) {
+      return;
+    }
+
+    this._sortFilms(sortType);
+    this._clearCardList();
+    this._renderCardsList();
+  }
+
   _handleCardChange(updatedCard) {
     this._filmsCards = updateItem(this._filmsCards, updatedCard);
+    this._sourcedFilmsCards = updateItem(this._sourcedFilmsCards, updatedCard);
     this._sortedCardsByRating = updateItem(this._sortedCardsByRating, updatedCard);
     this._sortedCardsByComments = updateItem(this._sortedCardsByComments, updatedCard);
 
@@ -66,7 +118,8 @@ export default class FilmsList {
   }
 
   _renderSort() {
-    render(this._mainContainer, new SortView(), RenderPosition.BEFOREEND);
+    render(this._filmsComponent, this._sortComponent, RenderPosition.AFTERBEGIN);
+    this._sortComponent.setSortTypeChangeHandler(this._handleSortTypeChange);
   }
 
   _renderCard(cardListElement, card) {
@@ -158,7 +211,7 @@ export default class FilmsList {
   }
 
   _renderShowMoreButton() {
-    render(this._filmsComponent, this._showMoreComponent, RenderPosition.BEFOREEND);
+    render(this._filmsListComponent, this._showMoreComponent, RenderPosition.BEFOREEND);
 
     this._showMoreComponent.setClickHandler(this._handleShowMoreButtonClick);
   }
