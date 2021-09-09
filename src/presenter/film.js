@@ -10,11 +10,12 @@ const Mode = {
 };
 
 export default class Film {
-  constructor(bodyContainer, filmsComments, changeData, changeMode) {
+  constructor(bodyContainer, filmsComments, changeData, changeMode, updateCommentCards) {
     this._bodyContainer = bodyContainer;
     this._filmsComments = filmsComments;
     this._changeData = changeData;
     this._changeMode = changeMode;
+    this._updateCommentCards = updateCommentCards;
 
     this._filmCardComponent = null;
     this._filmPopupComponent = null;
@@ -26,17 +27,18 @@ export default class Film {
     this._handleWatchlistClick = this._handleWatchlistClick.bind(this);
     this._handleWatchedClick = this._handleWatchedClick.bind(this);
     this._handleFavoritesClick = this._handleFavoritesClick.bind(this);
+    this._handleNewComment = this._handleNewComment.bind(this);
   }
 
-  init(cardListElement, card) {
+  init(cardListElement, card, filmsComments = this._filmsComments) {
     this._cardListElement = cardListElement;
     this._card = card;
 
     const prevFilmCardComponent = this._filmCardComponent;
     const prevFilmPopupComponent = this._filmPopupComponent;
 
-    this._filmCardComponent = new FilmCardView(card);
-    this._filmPopupData = getPopupData(card, this._filmsComments);
+    this._filmCardComponent = new FilmCardView(this._card);
+    this._filmPopupData = getPopupData(this._card, filmsComments);
     this._filmPopupComponent = new PopupView(this._filmPopupData);
 
     this._filmCardComponent.setOpenPopupHandler(this._clickPopupOpen);
@@ -48,6 +50,7 @@ export default class Film {
     this._filmPopupComponent.setPopupWatchlistClickHandler(this._handleWatchlistClick);
     this._filmPopupComponent.setPopupWatchedHandler(this._handleWatchedClick);
     this._filmPopupComponent.setPopupFavoritesHandler(this._handleFavoritesClick);
+    this._filmPopupComponent.setPopupNewCommentHandler(this._handleNewComment);
 
     if (prevFilmCardComponent === null || prevFilmPopupComponent === null) {
       render(this._cardListElement, this._filmCardComponent, RenderPosition.BEFOREEND);
@@ -99,9 +102,12 @@ export default class Film {
   }
 
   _closePopup() {
+    this._card = this._filmPopupComponent.getDefaultCard();
+    this._filmPopupComponent.reset(this._filmPopupData);
     this._bodyContainer.removeChild(this._filmPopupComponent.getElement());
     this._bodyContainer.classList.remove('hide-overflow');
     this._mode = Mode.DEFAULT;
+    this._updateCommentCards();
   }
 
   _escKeyDownHandler(evt) {
@@ -112,7 +118,10 @@ export default class Film {
     }
   }
 
-  _handleWatchlistClick() {
+  _handleWatchlistClick(popupPosition = null) {
+    if (this._mode === Mode.EDITING) {
+      this._card = this._filmPopupComponent.getPopupData();
+    }
     this._changeData(
       Object.assign(
         {},
@@ -122,9 +131,16 @@ export default class Film {
         },
       ),
     );
+    if (popupPosition !== null) {
+      this._filmPopupComponent.setScrollPosition(popupPosition);
+    }
   }
 
-  _handleWatchedClick() {
+  _handleWatchedClick(popupPosition = null) {
+
+    if (this._mode === Mode.EDITING) {
+      this._card = this._filmPopupComponent.getPopupData();
+    }
     this._changeData(
       Object.assign(
         {},
@@ -134,9 +150,15 @@ export default class Film {
         },
       ),
     );
+    if (popupPosition !== null) {
+      this._filmPopupComponent.setScrollPosition(popupPosition);
+    }
   }
 
-  _handleFavoritesClick() {
+  _handleFavoritesClick(popupPosition = null) {
+    if (this._mode === Mode.EDITING) {
+      this._card = this._filmPopupComponent.getPopupData();
+    }
     this._changeData(
       Object.assign(
         {},
@@ -146,5 +168,18 @@ export default class Film {
         },
       ),
     );
+    if (popupPosition !== null) {
+      this._filmPopupComponent.setScrollPosition(popupPosition);
+    }
+  }
+
+  _handleNewComment(popupPosition = null, card, comment) {
+    if (this._mode === Mode.EDITING) {
+      this._card = this._filmPopupComponent.getPopupData();
+    }
+    this._changeData(card, comment);
+    if (popupPosition !== null) {
+      this._filmPopupComponent.setScrollPosition(popupPosition);
+    }
   }
 }
