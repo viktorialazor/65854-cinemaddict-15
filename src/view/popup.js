@@ -1,6 +1,7 @@
 import SmartView from './smart.js';
-import {getCurrentDate, generateCommentAuthor} from '../utils/film.js';
 import {nanoid} from 'nanoid';
+import {getCurrentDate, generateCommentAuthor} from '../utils/film.js';
+import {CommentEmotion, CommentEmojiLabel} from '../const.js';
 
 const createPopupTemplate = (card, comments) => {
   const {
@@ -173,8 +174,8 @@ const createPopupTemplate = (card, comments) => {
 export default class Popup extends SmartView {
   constructor(card) {
     super();
-    this._card = Popup.parseCardToData(card);
-    this._cardInfo = this._card[0];
+    this._card = card;
+    this._cardInfo = Popup.parseCardToData(this._card[0]);
     this._cardComments = this._card[1];
     this._closePopupHandler = this._closePopupHandler.bind(this);
     this._clickPopupWatchlistHandler = this._clickPopupWatchlistHandler.bind(this);
@@ -258,17 +259,17 @@ export default class Popup extends SmartView {
   _getCommentEmoji(emoji) {
     let emojiPath = '';
     switch(emoji) {
-      case 'emoji-smile':
-        emojiPath = 'smile';
+      case CommentEmojiLabel.EMOJI_SMILE:
+        emojiPath = CommentEmotion.SMILE;
         break;
-      case 'emoji-sleeping':
-        emojiPath = 'sleeping';
+      case CommentEmojiLabel.EMOJI_SLEEPING:
+        emojiPath = CommentEmotion.SLEEPING;
         break;
-      case 'emoji-puke':
-        emojiPath = 'puke';
+      case CommentEmojiLabel.EMOJI_PUKE:
+        emojiPath = CommentEmotion.PUKE;
         break;
-      case 'emoji-angry':
-        emojiPath = 'angry';
+      case CommentEmojiLabel.EMOJI_ANGRY:
+        emojiPath = CommentEmotion.ANGRY;
         break;
     }
     return `./images/emoji/${emojiPath}.png`;
@@ -364,7 +365,8 @@ export default class Popup extends SmartView {
   }
 
   static parseCardToData(card) {
-    let cardInfo = card[0];
+    let cardInfo = card;
+
     cardInfo = Object.assign(
       {},
       cardInfo,
@@ -374,9 +376,7 @@ export default class Popup extends SmartView {
       },
     );
 
-    const cardComments = card[1];
-
-    return [cardInfo, cardComments];
+    return cardInfo;
   }
 
   static parseDataToCard(card) {
