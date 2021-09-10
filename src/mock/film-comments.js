@@ -2,7 +2,7 @@ import dayjs from 'dayjs';
 import {nanoid} from 'nanoid';
 import {MAX_COMMENTS} from '../const.js';
 import {getRandomNumber} from '../utils/common.js';
-import {humanizeDate} from '../utils/film.js';
+import {humanizeDate, generateCommentAuthor} from '../utils/film.js';
 
 const generateCommentEmotion = () => {
   const emotions = ['angry.png', 'puke.png', 'sleeping.png', 'smile.png'];
@@ -18,14 +18,6 @@ const generateCommentDate = () => {
   const date = dayjs().add(daysGap, 'day').toDate();
 
   return humanizeDate(date);
-};
-
-const generateCommentAuthor = () => {
-  const authors = ['Tim Macoveev', 'John Doe', 'Mary Beth', 'John Call', 'Eleanor Parker'];
-
-  const randomIndex = getRandomNumber(0, authors.length - 1);
-
-  return authors[randomIndex];
 };
 
 const generateCommentMessage = () => {

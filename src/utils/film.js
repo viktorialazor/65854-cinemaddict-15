@@ -1,9 +1,16 @@
 import dayjs from 'dayjs';
 import relativeTime from 'dayjs/plugin/relativeTime';
 import {MAX_SHORT_DESCRIPTIONS, MINUTES_IN_HOUR} from '../const.js';
+import {getRandomNumber} from './common.js';
 
 const humanizeDate = (date) => {
   dayjs.extend(relativeTime);
+  return dayjs(date).fromNow();
+};
+
+const getCurrentDate = () => {
+  dayjs.extend(relativeTime);
+  const date = dayjs().toDate();
   return dayjs(date).fromNow();
 };
 
@@ -54,8 +61,16 @@ const getPopupData = (card, commentsList) => {
   return [card, filmComments];
 };
 
+const generateCommentAuthor = () => {
+  const authors = ['Tim Macoveev', 'John Doe', 'Mary Beth', 'John Call', 'Eleanor Parker'];
+
+  const randomIndex = getRandomNumber(0, authors.length - 1);
+
+  return authors[randomIndex];
+};
+
 const sortFilmsDate = (filmA, filmB) => dayjs(filmA.release).diff(dayjs(filmB.release));
 
 const sortFilmsRating = (filmA, filmB) => filmB.rating - filmA.rating;
 
-export {humanizeDate, changeFormatDate, durationFilm, generateShortDescription, getPopupData, sortFilmsDate, sortFilmsRating};
+export {humanizeDate, getCurrentDate, changeFormatDate, durationFilm, generateShortDescription, getPopupData, generateCommentAuthor, sortFilmsDate, sortFilmsRating};
