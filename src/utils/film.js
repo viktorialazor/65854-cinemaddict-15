@@ -1,6 +1,6 @@
 import dayjs from 'dayjs';
 import relativeTime from 'dayjs/plugin/relativeTime';
-import {MAX_SHORT_DESCRIPTIONS, MINUTES_IN_HOUR} from '../const.js';
+import {MAX_SHORT_DESCRIPTIONS, MINUTES_IN_HOUR, FilterType} from '../const.js';
 import {getRandomNumber} from './common.js';
 
 const humanizeDate = (date) => {
@@ -73,4 +73,25 @@ const sortFilmsDate = (filmA, filmB) => dayjs(filmA.release).diff(dayjs(filmB.re
 
 const sortFilmsRating = (filmA, filmB) => filmB.rating - filmA.rating;
 
-export {humanizeDate, getCurrentDate, changeFormatDate, durationFilm, generateShortDescription, getPopupData, generateCommentAuthor, sortFilmsDate, sortFilmsRating};
+const getNoFilmsMessage = (filterType) => {
+  let message = '';
+
+  switch(filterType) {
+    case FilterType.ALL:
+      message = 'There are no movies in our database';
+      break;
+    case FilterType.WATCHLIST:
+      message = 'There are no watchlist movies';
+      break;
+    case FilterType.HISTORY:
+      message = 'There are no watched movies';
+      break;
+    case FilterType.FAVORITES:
+      message = 'There are no favorites movies';
+      break;
+  }
+
+  return message;
+};
+
+export {humanizeDate, getCurrentDate, changeFormatDate, durationFilm, generateShortDescription, getPopupData, generateCommentAuthor, sortFilmsDate, sortFilmsRating, getNoFilmsMessage};
