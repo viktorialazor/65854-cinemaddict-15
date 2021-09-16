@@ -1,28 +1,56 @@
 import AbstractView from './abstract.js';
 
-const createNavigationTemplate = (cards) => {
-  const watchlist = cards.slice().filter((card) => card.isInWatchlist);
-  const watched = cards.slice().filter((card) => card.isWatched);
-  const favorites = cards.slice().filter((card) => card.isInFavorites);
+const createNavigationItemTemplate = (filter, currentFilterType) => {
+  const {type, name, count} = filter;
+  let itemCount = '';
+
+  if (type !== 'all')  {
+    itemCount = `<span class="main-navigation__item-count">${count}</span>`;
+  }
+
+  return (
+    `<a href="#${type}" class="main-navigation__item ${type === currentFilterType ? 'main-navigation__item--active' : ''}" id="${type}">${name} ${itemCount}</a>`
+  );
+};
+
+const createNavigationTemplate = (filterItems, currentFilterType) => {
+  const filterItemsTemplate = filterItems
+    .map((filter) => createNavigationItemTemplate(filter, currentFilterType))
+    .join('');
 
   return `<nav class="main-navigation">
     <div class="main-navigation__items">
-      <a href="#all" class="main-navigation__item main-navigation__item--active">All movies</a>
-      <a href="#watchlist" class="main-navigation__item">Watchlist <span class="main-navigation__item-count">${watchlist.length}</span></a>
-      <a href="#history" class="main-navigation__item">History <span class="main-navigation__item-count">${watched.length}</span></a>
-      <a href="#favorites" class="main-navigation__item">Favorites <span class="main-navigation__item-count">${favorites.length}</span></a>
+      ${filterItemsTemplate}
     </div>
     <a href="#stats" class="main-navigation__additional">Stats</a>
   </nav>`;
 };
 
 export default class Navigation extends AbstractView {
-  constructor(cards) {
+  constructor(filters, currentFilterType) {
     super();
-    this._cards = cards;
+    this._filters = filters;
+    this._currentFilter = currentFilterType;
+
+    this._filterTypeChangeHandler = this._filterTypeChangeHandler.bind(this);
   }
 
   getTemplate() {
-    return createNavigationTemplate(this._cards);
+    return createNavigationTemplate(this._filters, this._currentFilter);
+  }
+
+  _filterTypeChangeHandler(evt) {
+    evt.preventDefault();
+
+    if (evt.target.tagName !== 'A') {
+      return;
+    }
+
+    this._callback.filterTypeChange(evt.target.id);
+  }
+
+  setFilterTypeChangeHandler(callback) {
+    this._callback.filterTypeChange = callback;
+    this.getElement().addEventListener('click', this._filterTypeChangeHandler);
   }
 }
