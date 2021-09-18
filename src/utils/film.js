@@ -3,6 +3,27 @@ import relativeTime from 'dayjs/plugin/relativeTime';
 import {MAX_SHORT_DESCRIPTIONS, MINUTES_IN_HOUR, FilterType} from '../const.js';
 import {getRandomNumber} from './common.js';
 
+const getProfileRating = (cards) => {
+  let profileRating = '';
+  let watchedAmount = 0;
+
+  cards.forEach((card) => {
+    if (card.isWatched) {
+      watchedAmount += 1;
+    }
+  });
+
+  if (watchedAmount > 0 && watchedAmount < 11) {
+    profileRating = 'Novice';
+  } else if (watchedAmount > 10 && watchedAmount < 20) {
+    profileRating = 'Fan';
+  } else {
+    profileRating = 'Movie Buff';
+  }
+
+  return profileRating;
+};
+
 const humanizeDate = (date) => {
   dayjs.extend(relativeTime);
   return dayjs(date).fromNow();
@@ -31,6 +52,13 @@ const durationFilm = (duration = 0) => {
   }
 
   return durationName;
+};
+
+const getDurationWatchedFilm = (duration = 0) => {
+  const hours = parseInt((duration / MINUTES_IN_HOUR), 10);
+  const minutes = duration % MINUTES_IN_HOUR;
+
+  return {hours, minutes};
 };
 
 const generateShortDescription = (description) => {
@@ -94,4 +122,11 @@ const getNoFilmsMessage = (filterType) => {
   return message;
 };
 
-export {humanizeDate, getCurrentDate, changeFormatDate, durationFilm, generateShortDescription, getPopupData, generateCommentAuthor, sortFilmsDate, sortFilmsRating, getNoFilmsMessage};
+const generateWatchingDate = () => {
+  const maxDaysGap = 365;
+  const daysGap = getRandomNumber(-maxDaysGap, 0);
+  const date = dayjs().add(daysGap, 'day').toDate();
+  return date;
+};
+
+export {getProfileRating, humanizeDate, getCurrentDate, changeFormatDate, durationFilm, getDurationWatchedFilm, generateShortDescription, getPopupData, generateCommentAuthor, sortFilmsDate, sortFilmsRating, getNoFilmsMessage, generateWatchingDate};

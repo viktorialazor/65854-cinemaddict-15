@@ -44,9 +44,6 @@ export default class FilmsList {
     this._handleShowMoreButtonClick = this._handleShowMoreButtonClick.bind(this);
     this._handleSortTypeChange = this._handleSortTypeChange.bind(this);
     this._updateFilteredCardList = this._updateFilteredCardList.bind(this);
-
-    this._cardsModel.addObserver(this._handleModelEvent);
-    this._filterModel.addObserver(this._handleModelEvent);
   }
 
   init() {
@@ -57,7 +54,20 @@ export default class FilmsList {
     const filtredCards = filter[this._filterType](cards);
     this._quantityCardsOnPage = Math.min(filtredCards.length, QUANTITY_CARDS_PER_STEP);
 
+    this._cardsModel.addObserver(this._handleModelEvent);
+    this._filterModel.addObserver(this._handleModelEvent);
+
     this._renderFilmsBoard();
+  }
+
+  destroy() {
+    this._clearFilmList({resetRenderedCardCount: true, resetSortType: true});
+
+    remove(this._filmsComponent);
+    remove(this._filmsListContainerComponent);
+
+    this._cardsModel.removeObserver(this._handleModelEvent);
+    this._filterModel.removeObserver(this._handleModelEvent);
   }
 
   _getComments() {

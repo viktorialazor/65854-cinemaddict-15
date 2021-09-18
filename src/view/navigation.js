@@ -18,12 +18,9 @@ const createNavigationTemplate = (filterItems, currentFilterType) => {
     .map((filter) => createNavigationItemTemplate(filter, currentFilterType))
     .join('');
 
-  return `<nav class="main-navigation">
-    <div class="main-navigation__items">
-      ${filterItemsTemplate}
-    </div>
-    <a href="#stats" class="main-navigation__additional">Stats</a>
-  </nav>`;
+  const filters = `<div class="main-navigation__items">${filterItemsTemplate}</div>`;
+
+  return filters;
 };
 
 export default class Navigation extends AbstractView {
@@ -41,9 +38,11 @@ export default class Navigation extends AbstractView {
 
   _filterTypeChangeHandler(evt) {
     evt.preventDefault();
-
     if (evt.target.tagName !== 'A') {
       return;
+    }
+    if (evt.target.id === 'all' && evt.target.className !== 'main-navigation__item--active') {
+      evt.target.classList.add('main-navigation__item--active');
     }
 
     this._callback.filterTypeChange(evt.target.id);

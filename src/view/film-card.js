@@ -1,4 +1,4 @@
-import {changeFormatDate, generateShortDescription} from '../utils/film.js';
+import {durationFilm, changeFormatDate, generateShortDescription} from '../utils/film.js';
 import AbstractView from './abstract.js';
 
 const createFilmCardTemplate = (card = {}) => {
@@ -16,6 +16,7 @@ const createFilmCardTemplate = (card = {}) => {
     commentsId,
   } = card;
 
+  const filmDuration = durationFilm(duration);
   const year = changeFormatDate(release, 'YYYY');
   const genre = genres[0];
   const shortDescription = generateShortDescription(description);
@@ -29,7 +30,7 @@ const createFilmCardTemplate = (card = {}) => {
     <p class="film-card__rating">${rating}</p>
     <p class="film-card__info">
       <span class="film-card__year">${year}</span>
-      <span class="film-card__duration">${duration}</span>
+      <span class="film-card__duration">${filmDuration}</span>
       <span class="film-card__genre">${genre}</span>
     </p>
     <img src=${poster} alt="" class="film-card__poster">

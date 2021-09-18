@@ -1,7 +1,7 @@
 import SmartView from './smart.js';
 import {nanoid} from 'nanoid';
 import he from 'he';
-import {getCurrentDate, generateCommentAuthor} from '../utils/film.js';
+import {durationFilm, getCurrentDate, generateCommentAuthor} from '../utils/film.js';
 import {CommentEmotion, CommentEmojiLabel} from '../const.js';
 
 const createPopupTemplate = (card, comments) => {
@@ -27,7 +27,7 @@ const createPopupTemplate = (card, comments) => {
     commentMessage,
   } = card;
 
-
+  const filmDuration = durationFilm(duration);
   const emoji = commentEmoji ? `<img src=${commentEmoji} alt=${commentEmoji} width="70" height="70">` : '';
   const text = commentMessage ? commentMessage : '';
 
@@ -111,7 +111,7 @@ const createPopupTemplate = (card, comments) => {
               </tr>
               <tr class="film-details__row">
                 <td class="film-details__term">Runtime</td>
-                <td class="film-details__cell">${duration}</td>
+                <td class="film-details__cell">${filmDuration}</td>
               </tr>
               <tr class="film-details__row">
                 <td class="film-details__term">Country</td>

@@ -1,34 +1,21 @@
+import {getProfileRating} from '../utils/film.js';
 import AbstractView from './abstract.js';
 
 const createProfileTemplate = (cards) => {
+  let watchedAmount = 0;
 
-  const getProfileRating = () => {
-    let profileStatus = '';
-    let watchedAmount = 0;
-
-    cards.forEach((card) => {
-      if (card.isWatched) {
-        watchedAmount += 1;
-      }
-    });
-
-    if (watchedAmount > 0 && watchedAmount < 11) {
-      profileStatus = 'novice';
-    } else if (watchedAmount > 10 && watchedAmount < 20) {
-      profileStatus = 'fan';
-    } else {
-      profileStatus = 'movie buff';
+  cards.forEach((card) => {
+    if (card.isWatched) {
+      watchedAmount += 1;
     }
+  });
 
-    const profile = watchedAmount > 0 ? `<p class="profile__rating">${profileStatus}</p>` : '';
+  const profileRating = getProfileRating(cards);
 
-    return profile;
-  };
-
-  const profileRating = getProfileRating();
+  const profile = watchedAmount > 0 ? `<p class="profile__rating">${profileRating}</p>` : '';
 
   return `<section class="header__profile profile">
-    ${profileRating}
+    ${profile}
     <img class="profile__avatar" src="images/bitmap@2x.png" alt="Avatar" width="35" height="35">
   </section>`;
 };
