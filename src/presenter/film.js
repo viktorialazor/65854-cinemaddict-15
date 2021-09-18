@@ -1,3 +1,4 @@
+import dayjs from 'dayjs';
 import {UserAction, UpdateType, FilterType} from '../const.js';
 import {RenderPosition, render, remove, replace} from '../utils/render.js';
 import {getPopupData} from '../utils/film.js';
@@ -150,16 +151,29 @@ export default class Film {
     if (this._mode === Mode.EDITING) {
       this._card = this._filmPopupComponent.getPopupData();
     }
-    this._changeData(
-      UserAction.UPDATE_CARD,
-      UpdateType.PATCH,
-      Object.assign(
+    if (!this._card.isWatched) {
+      this._card = Object.assign(
         {},
         this._card,
         {
-          isWatched: !this._card.isWatched,
+          isWatched: true,
+          watchingDate: dayjs().toDate(),
         },
-      ),
+      );
+    } else {
+      this._card = Object.assign(
+        {},
+        this._card,
+        {
+          isWatched: false,
+          watchingDate: '',
+        },
+      );
+    }
+    this._changeData(
+      UserAction.UPDATE_CARD,
+      UpdateType.PATCH,
+      this._card,
       null,
       this._mode,
       FilterType.HISTORY,
@@ -213,7 +227,7 @@ export default class Film {
       this._card = this._filmPopupComponent.getPopupData();
     }
     this._changeData(
-      UserAction.ADD_COMMENT,
+      UserAction.DELETE_COMMENT,
       UpdateType.MINOR,
       card,
       comment,

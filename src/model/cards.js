@@ -73,7 +73,7 @@ export default class Cards extends AbstractObserver {
       ...this._cards.slice(indexCard + 1),
     ];
 
-    const indexComment = this._comments.findIndex((comment) => comment.id === updateCommentId.id);
+    const indexComment = this._comments.findIndex((comment) => comment.id === updateCommentId);
 
     this._comments = [
       ...this._comments.slice(0, indexComment),
