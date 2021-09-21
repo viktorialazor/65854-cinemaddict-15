@@ -17,8 +17,10 @@ const getProfileRating = (cards) => {
     profileRating = 'Novice';
   } else if (watchedAmount > 10 && watchedAmount < 20) {
     profileRating = 'Fan';
-  } else {
+  } else if (watchedAmount > 20){
     profileRating = 'Movie Buff';
+  } else {
+    profileRating = '';
   }
 
   return profileRating;

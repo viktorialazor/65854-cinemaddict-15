@@ -141,14 +141,6 @@ export default class Statistics extends SmartView {
     this._handlerStatisticFilters = this._handlerStatisticFilters.bind(this);
   }
 
-  removeElement() {
-    super.removeElement();
-
-    if (this._statsChart !== null) {
-      this._statsChart = null;
-    }
-  }
-
   getTemplate() {
     return createStatisticsTemplate(this._cards, this._range);
   }

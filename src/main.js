@@ -119,5 +119,7 @@ api.getCards()
   })
   .catch(() => {
     cardsModel.setCards(UpdateType.INIT, [], []);
+    render(siteHeaderElement, new ProfileView([]), RenderPosition.BEFOREEND);
+    render(siteFooterStatisticsElement, new QuantityMoviesView([]), RenderPosition.BEFOREEND);
     navigationWrapperComponent.setMenuHandler(handleMenuClick);
   });

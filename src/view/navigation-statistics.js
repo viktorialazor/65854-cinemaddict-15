@@ -1,7 +1,7 @@
 import AbstractView from './abstract.js';
 
 const createNavigationStatisticsTemplate = () => (
-  `<a href="#stats" class="main-navigation__additional">Stats
+  `<a href="#stats" id="navigation-statistics" class="main-navigation__additional">Stats
   </a>`
 );
 

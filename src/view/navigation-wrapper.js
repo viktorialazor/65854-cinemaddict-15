@@ -26,7 +26,7 @@ export default class NavigationWrapper extends AbstractView {
     }
     let menuItem = '';
 
-    if (evt.target.className === 'main-navigation__additional') {
+    if (evt.target.id === 'navigation-statistics') {
       menuItem = MenuItem.STATISTICS;
       this._isShowFilms = false;
       this._isShowStatistics = true;

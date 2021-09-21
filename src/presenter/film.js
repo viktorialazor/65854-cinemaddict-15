@@ -11,11 +11,6 @@ const Mode = {
   EDITING: 'EDITING',
 };
 
-export const State = {
-  DELETING: 'ABORTING_DELETE',
-  ABORTING: 'ABORTING_ADD',
-};
-
 export default class Film {
   constructor(bodyContainer, filmsComments, changeData, changeMode, updateCommentCards, updateFilteredList) {
     this._bodyContainer = bodyContainer;
@@ -106,11 +101,11 @@ export default class Film {
   }
 
   setCancelDeleteComment() {
-    this._filmPopupComponent.setAbordingDeleteCommentHandler();
+    this._filmPopupComponent.setAbortingDeleteCommentHandler();
   }
 
   setCancelAddComment() {
-    this._filmPopupComponent.setAbordingAddCommentHandler();
+    this._filmPopupComponent.setAbortingAddCommentHandler();
   }
 
   setPopupScrollPosition(scrollPosition) {

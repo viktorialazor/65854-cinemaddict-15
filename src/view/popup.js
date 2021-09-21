@@ -254,33 +254,36 @@ export default class Popup extends SmartView {
 
   setPopupDeleteCommentHandler(callback) {
     this._callback.deletePopupComment = callback;
-    this._comments = this.getElement().querySelectorAll('.film-details__comment');
-    this._comments.forEach((comment) => {
+    this._commentsElements = this.getElement().querySelectorAll('.film-details__comment');
+    this._commentsElements.forEach((comment) => {
       comment.addEventListener('click', this._clickDeleteCommentHandler);
     });
   }
 
   setDetetingCommentHandler() {
-    const commentButton = this._comment.querySelector('.film-details__comment-delete');
-    commentButton.textContent = 'Deleting';
-    commentButton.disabled = true;
-  }
+    let commentButtonElement = null;
 
+    if (this._comment) {
+      commentButtonElement = this._comment.querySelector('.film-details__comment-delete');
+      commentButtonElement.textContent = 'Deleting';
+      commentButtonElement.disabled = true;
+    }
+  }
 
   setSavingCommentHandler() {
     const newCommentElement = this.getElement().querySelector('.film-details__new-comment');
     newCommentElement.classList.add('film-details__new-comment--disabled');
   }
 
-  setAbordingDeleteCommentHandler() {
-    const commentButton = this._comment.querySelector('.film-details__comment-delete');
+  setAbortingDeleteCommentHandler() {
+    const commentButtonElement = this._comment.querySelector('.film-details__comment-delete');
 
     this._comment.classList.add('shake');
-    commentButton.textContent = 'Delete';
-    commentButton.disabled = false;
+    commentButtonElement.textContent = 'Delete';
+    commentButtonElement.disabled = false;
   }
 
-  setAbordingAddCommentHandler() {
+  setAbortingAddCommentHandler() {
     const newCommentElement = this.getElement().querySelector('.film-details__new-comment');
     const textFieldElement = this.getElement().querySelector('.film-details__comment-input');
     textFieldElement.disabled = false;

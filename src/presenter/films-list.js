@@ -231,11 +231,10 @@ export default class FilmsList {
           this._filmCommentedPresenter.get(dataCard.id).init(this._filmsListMostCommentedContainerElement, dataCard, comments);
         }
         break;
-      case UpdateType.MAJOR: {
+      case UpdateType.MAJOR:
         this._clearFilmList({resetRenderedCardCount: true, resetSortType: true});
         this._renderCardsList();
         break;
-      }
       case UpdateType.INIT:
         this._isLoading = false;
         this._hideNoFilmsMessage();

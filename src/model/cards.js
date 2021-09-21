@@ -121,8 +121,6 @@ export default class Cards extends AbstractObserver {
         watchingDate: card['user_details']['watching_date'] !== null ? new Date(card['user_details']['watching_date']) : null,
         commentsId: card['comments'],
         isCommentDisabled: false,
-        isCommentDeleting: false,
-        commentDeleteId: null,
       },
     );
 
@@ -183,8 +181,6 @@ export default class Cards extends AbstractObserver {
     delete adaptedCard.watchingDate;
     delete adaptedCard.commentsId;
     delete adaptedCard.isCommentDisabled;
-    delete adaptedCard.isCommentDeleting;
-    delete adaptedCard.commentDeleteId;
 
     return adaptedCard;
   }
