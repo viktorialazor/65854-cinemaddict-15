@@ -1,7 +1,7 @@
 import {nanoid} from 'nanoid';
 import {MIN_RATING, MAX_RATING, MIN_DESCRIPTIONS, MAX_DESCRIPTIONS} from '../const.js';
 import {getRandomNumber} from '../utils/common.js';
-import {changeFormatDate, generateWatchingDate} from '../utils/film.js';
+import {generateWatchingDate} from '../utils/film.js';
 
 const generatePoster = (index) => {
   const images = [
@@ -155,7 +155,6 @@ export const generateFilmCard = (index, comments) => {
     });
   }
 
-  const date = generateDate(index);
   const isWatched = Boolean(getRandomNumber(0, 1));
   const watchingDate = isWatched ? generateWatchingDate() : '';
 
@@ -168,7 +167,7 @@ export const generateFilmCard = (index, comments) => {
     director: generateDirector(index),
     writers: generateWriters(index),
     actors: generateActors(index),
-    release: changeFormatDate(date, 'D MMMM YYYY'),
+    release: generateDate(index),
     duration: generateDuration(index),
     country: 'USA',
     genres: generateGenre(index),

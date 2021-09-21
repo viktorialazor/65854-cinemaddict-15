@@ -75,9 +75,7 @@ const generateShortDescription = (description) => {
 
 const getPopupData = (card, commentsList) => {
   const cardCommentsId = card.commentsId;
-
   const filmComments = [];
-
   cardCommentsId.forEach((commentId) => {
     commentsList.forEach((comment) => {
       if (comment.id === commentId) {

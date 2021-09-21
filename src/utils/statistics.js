@@ -84,20 +84,16 @@ const getWatchedFilmsForRange = (cards, range) => {
       cardsWatched = cards.slice();
       break;
     case FilterStatisticRange.TODAY:
-      // const currentDate = dayjs(nowDate).format('DD MM YYYY');
       cardsWatched = cards.slice().filter((card) => dayjs(card.watchingDate).format('DD MM YYYY') === currentDate);
       break;
     case FilterStatisticRange.WEEK:
-      // const weekAgo = dayjs(nowDate).set('date', dayjs().get('date') -7);
       cardsWatched = cards.slice().filter((card) => card.watchingDate > weekAgo && card.watchingDate < dayjs().toDate());
       break;
     case FilterStatisticRange.MONTH:
-      // const monthAgo = dayjs(nowDate).set('month', dayjs().get('month') -1);
       cardsWatched = cards.slice().filter((card) => card.watchingDate > monthAgo && card.watchingDate < dayjs().toDate());
       break;
     case FilterStatisticRange.YEAR:
-      // const yearAgo = dayjs(nowDate).set('year', dayjs().get('year') -1);
-      cardsWatched = cards.slice().filter((card) => card.watchingDate > yearAgo && card.watchingDate < new Date());
+      cardsWatched = cards.slice().filter((card) => card.watchingDate > yearAgo && card.watchingDate < dayjs().toDate());
       break;
   }
 

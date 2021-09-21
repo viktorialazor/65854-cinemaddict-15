@@ -1,18 +1,16 @@
-import {QUANTITY_CARDS, QUANTITY_FILM_VARIANT, UpdateType, FilterType, MenuItem, FilterStatisticRange} from './const.js';
+import {UpdateType, FilterType, MenuItem, FilterStatisticRange, AUTHORIZATION, END_POINT} from './const.js';
 import {RenderPosition, render, remove} from './utils/render.js';
-import {getRandomNumber} from './utils/common.js';
 import {getWatchedFilms, getWatchedFilmsForRange} from './utils/statistics.js';
 import ProfileView from './view/profile.js';
 import QuantityMoviesView from './view/quantity-movies.js';
 import NavigationWrapperView from './view/navigation-wrapper.js';
 import NavigationStatisticsView from './view/navigation-statistics.js';
 import StatisticsView from './view/statistics.js';
-import {generateFilmCard} from './mock/film-card.js';
-import {generateComments} from './mock/film-comments.js';
 import FilmsListPresenter from './presenter/films-list.js';
 import FilterPresenter from './presenter/filter.js';
 import CardsModel from './model/cards.js';
 import FilterModel from './model/filter.js';
+import Api from './api.js';
 
 const bodyElement = document.querySelector('body');
 const siteHeaderElement = document.querySelector('.header');
@@ -20,27 +18,13 @@ const siteMainElement = document.querySelector('.main');
 const siteFooterElement = document.querySelector('.footer');
 const siteFooterStatisticsElement = siteFooterElement.querySelector('.footer__statistics');
 
-const filmsComments = [];
 let isShowFilms = true;
 let isShowStatistics = false;
 let statisticsComponent = null;
 let activeStatisticRange = FilterStatisticRange.ALL;
 
-const cards = new Array(QUANTITY_CARDS).fill().map(() => {
-  const filmVariant = getRandomNumber(0, QUANTITY_FILM_VARIANT);
-  const filmComments = generateComments();
-
-  filmComments.forEach((item) => {
-    filmsComments.push(item);
-  });
-
-  return generateFilmCard(filmVariant, filmComments);
-});
-
+const api = new Api(END_POINT, AUTHORIZATION);
 const cardsModel = new CardsModel();
-cardsModel.setCards(cards);
-cardsModel.setComments(filmsComments);
-
 const filterModel = new FilterModel();
 
 let filmsWatched = [];
@@ -48,7 +32,7 @@ let cardsStatistic = [];
 
 const navigationWrapperComponent = new NavigationWrapperView();
 const navigationStatisticsComponent = new NavigationStatisticsView();
-const filmsListPresenter = new FilmsListPresenter(bodyElement, cardsModel, filterModel);
+const filmsListPresenter = new FilmsListPresenter(bodyElement, cardsModel, filterModel, api);
 const filterPresenter = new FilterPresenter(navigationWrapperComponent, filterModel, cardsModel);
 
 const renderStatistics = () => {
@@ -105,12 +89,35 @@ const handleMenuClick = (menuItem, isFilms, isStats) => {
   }
 };
 
-navigationWrapperComponent.setMenuHandler(handleMenuClick);
-
-render(siteHeaderElement, new ProfileView(cards), RenderPosition.BEFOREEND);
 render(navigationWrapperComponent, navigationStatisticsComponent, RenderPosition.BEFOREEND);
 render(siteMainElement, navigationWrapperComponent, RenderPosition.BEFOREEND);
-render(siteFooterStatisticsElement, new QuantityMoviesView(cards), RenderPosition.BEFOREEND);
 
 filterPresenter.init();
 filmsListPresenter.init();
+
+api.getCards()
+  .then((cards) => {
+    const commentsFromRequests = [];
+    const totalComments = [];
+
+    cards.map((card) => {
+      commentsFromRequests.push(api.getCommentsByFilmId(card.id));
+    });
+
+    Promise.all(commentsFromRequests)
+      .then((allComments) => {
+        allComments.forEach((commentItem) => {
+          commentItem.forEach((comment) => {
+            totalComments.push(comment);
+          });
+        });
+        cardsModel.setCards(UpdateType.INIT, cards, totalComments);
+        render(siteHeaderElement, new ProfileView(cards), RenderPosition.BEFOREEND);
+        render(siteFooterStatisticsElement, new QuantityMoviesView(cards), RenderPosition.BEFOREEND);
+        navigationWrapperComponent.setMenuHandler(handleMenuClick);
+      });
+  })
+  .catch(() => {
+    cardsModel.setCards(UpdateType.INIT, [], []);
+    navigationWrapperComponent.setMenuHandler(handleMenuClick);
+  });

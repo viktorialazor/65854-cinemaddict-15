@@ -1,11 +1,9 @@
 import SmartView from './smart.js';
-import {nanoid} from 'nanoid';
 import he from 'he';
-import {durationFilm, getCurrentDate, generateCommentAuthor} from '../utils/film.js';
+import {humanizeDate, changeFormatDate, durationFilm} from '../utils/film.js';
 import {CommentEmotion, CommentEmojiLabel} from '../const.js';
 
 const createPopupTemplate = (card, comments) => {
-
   const {
     poster,
     title,
@@ -25,9 +23,11 @@ const createPopupTemplate = (card, comments) => {
     isInFavorites,
     commentEmoji,
     commentMessage,
+    isCommentDisabled,
   } = card;
 
   const filmDuration = durationFilm(duration);
+  const filmRelease = changeFormatDate(release, 'D MMMM YYYY');
   const emoji = commentEmoji ? `<img src=${commentEmoji} alt=${commentEmoji} width="70" height="70">` : '';
   const text = commentMessage ? commentMessage : '';
 
@@ -43,15 +43,18 @@ const createPopupTemplate = (card, comments) => {
       message,
     } = item;
 
+    const commentDate = humanizeDate(date);
+    const commentEmotion = `./images/emoji/${emotion}.png`;
+
     commentsList += `<li id=${id} class="film-details__comment">
       <span class="film-details__comment-emoji">
-        <img src=${emotion} width="55" height="55" alt="emoji-angry">
+        <img src=${commentEmotion} width="55" height="55" alt="emoji-angry">
       </span>
       <div>
         <p class="film-details__comment-text">${message}</p>
         <p class="film-details__comment-info">
           <span class="film-details__comment-author">${author}</span>
-          <span class="film-details__comment-day">${date}</span>
+          <span class="film-details__comment-day">${commentDate}</span>
           <button class="film-details__comment-delete">Delete</button>
         </p>
       </div>
@@ -107,7 +110,7 @@ const createPopupTemplate = (card, comments) => {
               </tr>
               <tr class="film-details__row">
                 <td class="film-details__term">Release Date</td>
-                <td class="film-details__cell">${release}</td>
+                <td class="film-details__cell">${filmRelease}</td>
               </tr>
               <tr class="film-details__row">
                 <td class="film-details__term">Runtime</td>
@@ -144,26 +147,26 @@ const createPopupTemplate = (card, comments) => {
             <div class="film-details__add-emoji-label">${emoji}</div>
 
             <label class="film-details__comment-label">
-              <textarea class="film-details__comment-input" placeholder="Select reaction below and write comment here" name="comment">${he.encode(text)}</textarea>
+              <textarea class="film-details__comment-input" placeholder="Select reaction below and write comment here" name="comment" ${isCommentDisabled ? 'disabled' : ''}>${he.encode(text)}</textarea>
             </label>
 
             <div class="film-details__emoji-list">
-              <input class="film-details__emoji-item visually-hidden" name="comment-emoji" type="radio" id="emoji-smile" value="smile">
+              <input class="film-details__emoji-item visually-hidden" name="comment-emoji" type="radio" id="emoji-smile" value="smile" ${isCommentDisabled ? 'disabled' : ''}>
               <label class="film-details__emoji-label" for="emoji-smile">
                 <img src="./images/emoji/smile.png" width="30" height="30" alt="emoji">
               </label>
 
-              <input class="film-details__emoji-item visually-hidden" name="comment-emoji" type="radio" id="emoji-sleeping" value="sleeping">
+              <input class="film-details__emoji-item visually-hidden" name="comment-emoji" type="radio" id="emoji-sleeping" value="sleeping" ${isCommentDisabled ? 'disabled' : ''}>
               <label class="film-details__emoji-label" for="emoji-sleeping">
                 <img src="./images/emoji/sleeping.png" width="30" height="30" alt="emoji">
               </label>
 
-              <input class="film-details__emoji-item visually-hidden" name="comment-emoji" type="radio" id="emoji-puke" value="puke">
+              <input class="film-details__emoji-item visually-hidden" name="comment-emoji" type="radio" id="emoji-puke" value="puke" ${isCommentDisabled ? 'disabled' : ''}>
               <label class="film-details__emoji-label" for="emoji-puke">
                 <img src="./images/emoji/puke.png" width="30" height="30" alt="emoji">
               </label>
 
-              <input class="film-details__emoji-item visually-hidden" name="comment-emoji" type="radio" id="emoji-angry" value="angry">
+              <input class="film-details__emoji-item visually-hidden" name="comment-emoji" type="radio" id="emoji-angry" value="angry" ${isCommentDisabled ? 'disabled' : ''}>
               <label class="film-details__emoji-label" for="emoji-angry">
                 <img src="./images/emoji/angry.png" width="30" height="30" alt="emoji">
               </label>
@@ -257,34 +260,62 @@ export default class Popup extends SmartView {
     });
   }
 
+  setDetetingCommentHandler() {
+    const commentButton = this._comment.querySelector('.film-details__comment-delete');
+    commentButton.textContent = 'Deleting';
+    commentButton.disabled = true;
+  }
+
+
+  setSavingCommentHandler() {
+    const newCommentElement = this.getElement().querySelector('.film-details__new-comment');
+    newCommentElement.classList.add('film-details__new-comment--disabled');
+  }
+
+  setAbordingDeleteCommentHandler() {
+    const commentButton = this._comment.querySelector('.film-details__comment-delete');
+
+    this._comment.classList.add('shake');
+    commentButton.textContent = 'Delete';
+    commentButton.disabled = false;
+  }
+
+  setAbordingAddCommentHandler() {
+    const newCommentElement = this.getElement().querySelector('.film-details__new-comment');
+    const textFieldElement = this.getElement().querySelector('.film-details__comment-input');
+    textFieldElement.disabled = false;
+    newCommentElement.classList.add('shake');
+    newCommentElement.classList.remove('film-details__new-comment--disabled');
+    this.updateData({
+      commentEmoji: this._commentEmoji,
+      commentMessage: this._commentMessage,
+    }, true);
+  }
+
   _clickDeleteCommentHandler(evt) {
     if (evt.target.tagName !== 'BUTTON') {
       return;
     }
 
     evt.preventDefault();
-    const comment = evt.target.closest('.film-details__comment');
-    const commentId = comment.id;
 
-    comment.remove();
-    const index = this._cardInfo.commentsId.findIndex((cardCommentId) => cardCommentId.toString() === commentId.toString());
+    this._comment = evt.target.closest('.film-details__comment');
+    this._commentId = this._comment.id;
+
+    const index = this._cardInfo.commentsId.findIndex((cardCommentId) => cardCommentId.toString() === this._commentId.toString());
 
     if (index === -1) {
       throw new Error('Can\'t delete unexisting commentsId');
     }
-    this._cardInfo.commentsId = [
-      ...this._cardInfo.commentsId.slice(0, index),
-      ...this._cardInfo.commentsId.slice(index + 1),
-    ];
-    this._callback.deletePopupComment(this._scrollPosition, Popup.parseDataToCard(this._cardInfo), commentId);
-  }
 
+    this._callback.deletePopupComment(this._scrollPosition, Popup.parseDataToCard(this._cardInfo), this._commentId);
+  }
 
   setScrollPosition(position) {
     this.getElement().scroll(0, position);
   }
 
-  getPopupData() {
+  getFilmPopupData() {
     return this._cardInfo;
   }
 
@@ -318,13 +349,18 @@ export default class Popup extends SmartView {
       return;
     }
 
-    const emoji = evt.target.parentElement.htmlFor;
+    const commentFormElement = this.getElement().querySelector('.film-details__new-comment');
 
-    this._commentEmoji = this._getCommentEmoji(emoji);
+    if(!commentFormElement.classList.contains('film-details__new-comment--disabled')) {
+      const emoji = evt.target.parentElement.htmlFor;
 
-    this.updateData({
-      commentEmoji: this._commentEmoji,
-    });
+      this._commentEmoji = this._getCommentEmoji(emoji);
+      this._emoji = this.getElement().querySelector(`#${emoji}`).value;
+
+      this.updateData({
+        commentEmoji: this._commentEmoji,
+      });
+    }
 
     this.setScrollPosition(this._scrollPosition);
   }
@@ -344,13 +380,9 @@ export default class Popup extends SmartView {
 
       if (this._commentMessage !== '' && this._commentEmoji !== '') {
         this._newComment = {
-          id: nanoid(),
-          emotion: this._commentEmoji,
-          date: getCurrentDate(),
-          author: generateCommentAuthor(),
+          emotion: this._emoji,
           message: this._commentMessage,
         };
-        this._cardInfo.commentsId.push(this._newComment.id);
         this._callback.addNewPopupComment(this._scrollPosition, Popup.parseDataToCard(this._cardInfo), this._newComment);
       }
     } else if (evt.key === 'Enter') {
