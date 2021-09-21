@@ -11,6 +11,11 @@ const Mode = {
   EDITING: 'EDITING',
 };
 
+export const State = {
+  DELETING: 'ABORTING_DELETE',
+  ABORTING: 'ABORTING_ADD',
+};
+
 export default class Film {
   constructor(bodyContainer, filmsComments, changeData, changeMode, updateCommentCards, updateFilteredList) {
     this._bodyContainer = bodyContainer;
@@ -89,6 +94,31 @@ export default class Film {
     }
   }
 
+  setSavingComment() {
+    this._filmPopupComponent.updateData({
+      isCommentDisabled: true,
+    });
+    this._filmPopupComponent.setSavingCommentHandler();
+  }
+
+  setDeletingComment() {
+    this._filmPopupComponent.setDetetingCommentHandler();
+  }
+
+  setCancelDeleteComment() {
+    this._filmPopupComponent.setAbordingDeleteCommentHandler();
+  }
+
+  setCancelAddComment() {
+    this._filmPopupComponent.setAbordingAddCommentHandler();
+  }
+
+  setPopupScrollPosition(scrollPosition) {
+    if (this._mode === 'EDITING') {
+      this._filmPopupComponent.setScrollPosition(scrollPosition);
+    }
+  }
+
   _clickPopupOpen() {
     this._openPopup();
     document.addEventListener('keydown', this._escKeyDownHandler);
@@ -126,7 +156,7 @@ export default class Film {
 
   _handleWatchlistClick(popupPosition = null) {
     if (this._mode === Mode.EDITING) {
-      this._card = this._filmPopupComponent.getPopupData();
+      this._card = this._filmPopupComponent.getFilmPopupData();
     }
     this._changeData(
       UserAction.UPDATE_CARD,
@@ -141,6 +171,7 @@ export default class Film {
       null,
       this._mode,
       FilterType.WATCHLIST,
+      popupPosition,
     );
     if (popupPosition !== null) {
       this._filmPopupComponent.setScrollPosition(popupPosition);
@@ -149,7 +180,7 @@ export default class Film {
 
   _handleWatchedClick(popupPosition = null) {
     if (this._mode === Mode.EDITING) {
-      this._card = this._filmPopupComponent.getPopupData();
+      this._card = this._filmPopupComponent.getFilmPopupData();
     }
     if (!this._card.isWatched) {
       this._card = Object.assign(
@@ -177,6 +208,7 @@ export default class Film {
       null,
       this._mode,
       FilterType.HISTORY,
+      popupPosition,
     );
     if (popupPosition !== null) {
       this._filmPopupComponent.setScrollPosition(popupPosition);
@@ -185,7 +217,7 @@ export default class Film {
 
   _handleFavoritesClick(popupPosition = null) {
     if (this._mode === Mode.EDITING) {
-      this._card = this._filmPopupComponent.getPopupData();
+      this._card = this._filmPopupComponent.getFilmPopupData();
     }
     this._changeData(
       UserAction.UPDATE_CARD,
@@ -200,6 +232,7 @@ export default class Film {
       null,
       this._mode,
       FilterType.FAVORITES,
+      popupPosition,
     );
     if (popupPosition !== null) {
       this._filmPopupComponent.setScrollPosition(popupPosition);
@@ -208,7 +241,7 @@ export default class Film {
 
   _handleNewComment(popupPosition = null, card, comment) {
     if (this._mode === Mode.EDITING) {
-      this._card = this._filmPopupComponent.getPopupData();
+      this._card = this._filmPopupComponent.getFilmPopupData();
     }
     this._changeData(
       UserAction.ADD_COMMENT,
@@ -216,6 +249,8 @@ export default class Film {
       card,
       comment,
       this._mode,
+      FilterType.ALL,
+      popupPosition,
     );
     if (popupPosition !== null) {
       this._filmPopupComponent.setScrollPosition(popupPosition);
@@ -224,7 +259,7 @@ export default class Film {
 
   _handleDeleteComment(popupPosition = null, card, comment) {
     if (this._mode === Mode.EDITING) {
-      this._card = this._filmPopupComponent.getPopupData();
+      this._card = this._filmPopupComponent.getFilmPopupData();
     }
     this._changeData(
       UserAction.DELETE_COMMENT,
@@ -232,6 +267,8 @@ export default class Film {
       card,
       comment,
       this._mode,
+      FilterType.ALL,
+      popupPosition,
     );
     if (popupPosition !== null) {
       this._filmPopupComponent.setScrollPosition(popupPosition);

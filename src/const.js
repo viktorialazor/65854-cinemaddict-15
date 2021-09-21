@@ -36,6 +36,7 @@ const UpdateType = {
   PATCH: 'PATCH',
   MINOR: 'MINOR',
   MAJOR: 'MAJOR',
+  INIT: 'INIT',
 };
 const FilterType = {
   ALL: 'all',
@@ -54,5 +55,7 @@ const FilterStatisticRange = {
   MONTH: 'month',
   YEAR: 'year',
 };
+const AUTHORIZATION = 'Basic F2XxaAt3kFb836A';
+const END_POINT = 'https://15.ecmascript.pages.academy/cinemaddict';
 
-export {QUANTITY_CARDS, QUANTITY_CARDS_PER_STEP, QUANTITY_EXTRA_CARDS, QUANTITY_FILM_VARIANT, MIN_RATING, MAX_RATING, MIN_DESCRIPTIONS, MAX_DESCRIPTIONS, MAX_SHORT_DESCRIPTIONS, MAX_COMMENTS, MAX_ID_NUMBER, MINUTES_IN_HOUR, SortType, CommentEmotion, CommentEmojiLabel, UserAction, UpdateType, FilterType, MenuItem, FilterStatisticRange};
+export {QUANTITY_CARDS, QUANTITY_CARDS_PER_STEP, QUANTITY_EXTRA_CARDS, QUANTITY_FILM_VARIANT, MIN_RATING, MAX_RATING, MIN_DESCRIPTIONS, MAX_DESCRIPTIONS, MAX_SHORT_DESCRIPTIONS, MAX_COMMENTS, MAX_ID_NUMBER, MINUTES_IN_HOUR, SortType, CommentEmotion, CommentEmojiLabel, UserAction, UpdateType, FilterType, MenuItem, FilterStatisticRange, AUTHORIZATION, END_POINT};
