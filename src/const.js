@@ -1,31 +1,29 @@
-const QUANTITY_CARDS = 20;
 const QUANTITY_CARDS_PER_STEP = 5;
 const QUANTITY_EXTRA_CARDS = 2;
-const QUANTITY_FILM_VARIANT = 6;
-const MIN_RATING = 1;
-const MAX_RATING = 10;
-const MIN_DESCRIPTIONS = 1;
-const MAX_DESCRIPTIONS = 5;
 const MAX_SHORT_DESCRIPTIONS = 140;
-const MAX_COMMENTS = 5;
-const MAX_ID_NUMBER = 1000;
 const MINUTES_IN_HOUR = 60;
+const BUTTON_ENTER = 'Enter';
+const ProfileRating = {
+  NOVICE: 0,
+  FAN: 10,
+  MOVIE_BUFF: 20,
+};
+const ProfileRatingType = {
+  NO_RATING: '',
+  NOVICE: 'Novice',
+  FAN: 'Fan',
+  MOVIE_BUFF: 'Movie Buff',
+};
+const NoFilmsMessage = {
+  ALL: 'There are no movies in our database',
+  WATCHLIST: 'There are no watchlist movies',
+  HISTORY: 'There are no watched movies',
+  FAVORITES: 'There are no favorites movies',
+};
 const SortType = {
   DEFAULT: 'default',
   DATE: 'date',
   RATING: 'rating',
-};
-const CommentEmotion = {
-  SMILE: 'smile',
-  SLEEPING: 'sleeping',
-  PUKE: 'puke',
-  ANGRY: 'angry',
-};
-const CommentEmojiLabel = {
-  EMOJI_SMILE: 'emoji-smile',
-  EMOJI_SLEEPING: 'emoji-sleeping',
-  EMOJI_PUKE: 'emoji-puke',
-  EMOJI_ANGRY: 'emoji-angry',
 };
 const UserAction = {
   UPDATE_CARD: 'UPDATE_CARD',
@@ -57,5 +55,9 @@ const FilterStatisticRange = {
 };
 const AUTHORIZATION = 'Basic F2XxaAt3kFb836A';
 const END_POINT = 'https://15.ecmascript.pages.academy/cinemaddict';
+const STORE_PREFIX = 'cinemaddict-localstorage';
+const STORE_VER = 'v15';
+const STORE_NAME = `${STORE_PREFIX}-${STORE_VER}`;
+const SHOW_TIME = 5000;
 
-export {QUANTITY_CARDS, QUANTITY_CARDS_PER_STEP, QUANTITY_EXTRA_CARDS, QUANTITY_FILM_VARIANT, MIN_RATING, MAX_RATING, MIN_DESCRIPTIONS, MAX_DESCRIPTIONS, MAX_SHORT_DESCRIPTIONS, MAX_COMMENTS, MAX_ID_NUMBER, MINUTES_IN_HOUR, SortType, CommentEmotion, CommentEmojiLabel, UserAction, UpdateType, FilterType, MenuItem, FilterStatisticRange, AUTHORIZATION, END_POINT};
+export {QUANTITY_CARDS_PER_STEP, QUANTITY_EXTRA_CARDS, MAX_SHORT_DESCRIPTIONS, MINUTES_IN_HOUR, BUTTON_ENTER, ProfileRating, ProfileRatingType, NoFilmsMessage, SortType, UserAction, UpdateType, FilterType, MenuItem, FilterStatisticRange, AUTHORIZATION, END_POINT, STORE_NAME, SHOW_TIME};

@@ -1,4 +1,4 @@
-import CardsModel from './model/cards.js';
+import CardsModel from '../model/cards.js';
 
 const Method = {
   GET: 'GET',
@@ -63,6 +63,16 @@ export default class Api {
       url: `comments/${comment}`,
       method: Method.DELETE,
     });
+  }
+
+  sync(data) {
+    return this._load({
+      url: '/movies/sync',
+      method: Method.POST,
+      body: JSON.stringify(data),
+      headers: new Headers({'Content-Type': 'application/json'}),
+    })
+      .then(Api.toJSON);
   }
 
   _load({

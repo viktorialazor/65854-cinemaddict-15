@@ -1,7 +1,36 @@
 import SmartView from './smart.js';
 import he from 'he';
 import {humanizeDate, changeFormatDate, durationFilm} from '../utils/film.js';
-import {CommentEmotion, CommentEmojiLabel} from '../const.js';
+import {BUTTON_ENTER} from '../const.js';
+
+const createCommentItemTemplate = (commentItem = {}) => {
+  const {
+    id,
+    emotion,
+    date,
+    author,
+    message,
+  } = commentItem;
+
+  const commentDate = humanizeDate(date);
+  const commentEmotion = `./images/emoji/${emotion}.png`;
+
+  return (`<li id=${id} class="film-details__comment">
+      <span class="film-details__comment-emoji">
+        <img src=${commentEmotion} width="55" height="55" alt="emoji-angry">
+      </span>
+      <div>
+        <p class="film-details__comment-text">${he.encode(message)}</p>
+        <p class="film-details__comment-info">
+          <span class="film-details__comment-author">${author}</span>
+          <span class="film-details__comment-day">${commentDate}</span>
+          <button class="film-details__comment-delete">Delete</button>
+        </p>
+      </div>
+    </li>`);
+};
+
+const createGenresTemplate = (genre) => (`<span class="film-details__genre">${genre}</span>`);
 
 const createPopupTemplate = (card, comments) => {
   const {
@@ -28,44 +57,12 @@ const createPopupTemplate = (card, comments) => {
 
   const filmDuration = durationFilm(duration);
   const filmRelease = changeFormatDate(release, 'D MMMM YYYY');
-  const emoji = commentEmoji ? `<img src=${commentEmoji} alt=${commentEmoji} width="70" height="70">` : '';
+  const emoji = commentEmoji ? `<img src=./images/emoji/${commentEmoji}.png alt=${commentEmoji} width="70" height="70">` : '';
   const text = commentMessage ? commentMessage : '';
-
-  const amountComments = comments.length;
-  let commentsList = '';
-
-  comments.forEach((item = {}) => {
-    const {
-      id,
-      emotion,
-      date,
-      author,
-      message,
-    } = item;
-
-    const commentDate = humanizeDate(date);
-    const commentEmotion = `./images/emoji/${emotion}.png`;
-
-    commentsList += `<li id=${id} class="film-details__comment">
-      <span class="film-details__comment-emoji">
-        <img src=${commentEmotion} width="55" height="55" alt="emoji-angry">
-      </span>
-      <div>
-        <p class="film-details__comment-text">${message}</p>
-        <p class="film-details__comment-info">
-          <span class="film-details__comment-author">${author}</span>
-          <span class="film-details__comment-day">${commentDate}</span>
-          <button class="film-details__comment-delete">Delete</button>
-        </p>
-      </div>
-    </li>`;
-  });
-
-  let genresList = '';
-  genres.slice().forEach((item) => {
-    genresList += `<span class="film-details__genre">${item}</span>`;
-  });
+  const genresList = genres.map((genre) => createGenresTemplate(genre)).join('');
   const genresTitle = genres.length > 1 ? 'Genres' : 'Genre';
+  const commentsList = comments.map((comment) => createCommentItemTemplate(comment)).join('');
+  const amountComments = comments.length;
   const watchlist = isInWatchlist ? 'film-details__control-button--active ' : '';
   const watched = isWatched ? 'film-details__control-button--active ' : '';
   const favorites = isInFavorites ? 'film-details__control-button--active ' : '';
@@ -284,15 +281,16 @@ export default class Popup extends SmartView {
   }
 
   setAbortingAddCommentHandler() {
+    this.updateData({
+      commentEmoji: this._commentEmoji,
+      commentMessage: this._commentMessage,
+      isCommentDisabled: false,
+    });
     const newCommentElement = this.getElement().querySelector('.film-details__new-comment');
     const textFieldElement = this.getElement().querySelector('.film-details__comment-input');
     textFieldElement.disabled = false;
     newCommentElement.classList.add('shake');
     newCommentElement.classList.remove('film-details__new-comment--disabled');
-    this.updateData({
-      commentEmoji: this._commentEmoji,
-      commentMessage: this._commentMessage,
-    }, true);
   }
 
   _clickDeleteCommentHandler(evt) {
@@ -326,25 +324,6 @@ export default class Popup extends SmartView {
     return Popup.parseDataToCard(this._cardInfo);
   }
 
-  _getCommentEmoji(emoji) {
-    let emojiPath = '';
-    switch(emoji) {
-      case CommentEmojiLabel.EMOJI_SMILE:
-        emojiPath = CommentEmotion.SMILE;
-        break;
-      case CommentEmojiLabel.EMOJI_SLEEPING:
-        emojiPath = CommentEmotion.SLEEPING;
-        break;
-      case CommentEmojiLabel.EMOJI_PUKE:
-        emojiPath = CommentEmotion.PUKE;
-        break;
-      case CommentEmojiLabel.EMOJI_ANGRY:
-        emojiPath = CommentEmotion.ANGRY;
-        break;
-    }
-    return `./images/emoji/${emojiPath}.png`;
-  }
-
   _emojiInputHandler(evt) {
     evt.preventDefault();
 
@@ -355,10 +334,9 @@ export default class Popup extends SmartView {
     const commentFormElement = this.getElement().querySelector('.film-details__new-comment');
 
     if(!commentFormElement.classList.contains('film-details__new-comment--disabled')) {
-      const emoji = evt.target.parentElement.htmlFor;
+      const emojiLabel = evt.target.parentElement.htmlFor;
 
-      this._commentEmoji = this._getCommentEmoji(emoji);
-      this._emoji = this.getElement().querySelector(`#${emoji}`).value;
+      this._commentEmoji = this.getElement().querySelector(`#${emojiLabel}`).value;
 
       this.updateData({
         commentEmoji: this._commentEmoji,
@@ -378,17 +356,17 @@ export default class Popup extends SmartView {
   }
 
   _enterCtrlKeyDownHandler(evt) {
-    if (evt.ctrlKey && evt.key === 'Enter') {
+    if (evt.ctrlKey && evt.key === BUTTON_ENTER) {
       evt.preventDefault();
 
       if (this._commentMessage !== '' && this._commentEmoji !== '') {
         this._newComment = {
-          emotion: this._emoji,
+          emotion: this._commentEmoji,
           message: this._commentMessage,
         };
         this._callback.addNewPopupComment(this._scrollPosition, Popup.parseDataToCard(this._cardInfo), this._newComment);
       }
-    } else if (evt.key === 'Enter') {
+    } else if (evt.key === BUTTON_ENTER) {
       evt.preventDefault();
       this.getElement()
         .querySelector('.film-details__new-comment')

@@ -1,4 +1,5 @@
 import AbstractView from './abstract.js';
+import {FilterType} from '../const.js';
 
 const createNavigationItemTemplate = (filter, currentFilterType) => {
   const {type, name, count} = filter;
@@ -41,7 +42,7 @@ export default class Navigation extends AbstractView {
     if (evt.target.tagName !== 'A') {
       return;
     }
-    if (evt.target.id === 'all' && evt.target.className !== 'main-navigation__item--active') {
+    if (evt.target.id === FilterType.ALL && evt.target.className !== 'main-navigation__item--active') {
       evt.target.classList.add('main-navigation__item--active');
     }
 

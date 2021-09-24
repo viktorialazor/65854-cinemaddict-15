@@ -12,13 +12,15 @@ const Mode = {
 };
 
 export default class Film {
-  constructor(bodyContainer, filmsComments, changeData, changeMode, updateCommentCards, updateFilteredList) {
+  constructor(bodyContainer, filmsComments, changeData, changeMode, updateCommentCards, updateFilteredList, openFilmPopup, closeFilmPopup) {
     this._bodyContainer = bodyContainer;
     this._filmsComments = filmsComments;
     this._changeData = changeData;
     this._changeMode = changeMode;
     this._updateCommentCards = updateCommentCards;
     this._updateFilteredList = updateFilteredList;
+    this._openFilmPopup = openFilmPopup;
+    this._closeFilmPopup = closeFilmPopup;
 
     this._filmCardComponent = null;
     this._filmPopupComponent = null;
@@ -108,7 +110,7 @@ export default class Film {
     this._filmPopupComponent.setAbortingAddCommentHandler();
   }
 
-  setPopupScrollPosition(scrollPosition) {
+  setPopupScrollPosition(scrollPosition = 0) {
     if (this._mode === 'EDITING') {
       this._filmPopupComponent.setScrollPosition(scrollPosition);
     }
@@ -125,6 +127,7 @@ export default class Film {
   }
 
   _openPopup() {
+    this._openFilmPopup();
     this._bodyContainer.appendChild(this._filmPopupComponent.getElement());
     this._bodyContainer.classList.add('hide-overflow');
     this._changeMode();
@@ -132,6 +135,7 @@ export default class Film {
   }
 
   _closePopup() {
+    this._closeFilmPopup();
     this._card = this._filmPopupComponent.getDefaultCard();
     this._filmPopupComponent.reset(this._filmPopupData);
     this._bodyContainer.removeChild(this._filmPopupComponent.getElement());

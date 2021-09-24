@@ -1,22 +1,19 @@
 import dayjs from 'dayjs';
 import {FilterStatisticRange} from '../const.js';
 
-const getWatchedFilms = (cards) => {
-  const watchedFilms = cards.slice().filter((card) => card.isWatched);
-  return watchedFilms;
-};
+const getWatchedFilms = (cards) => (cards.slice().filter((card) => card.isWatched));
 
 const getGenresRate = (allGenres) => {
-  const resultReduce = allGenres.reduce((acc, cur) => {
-    if (!acc.hash[cur]) {
-      acc.hash[cur] = {[cur]: 1};
-      acc.map.set(acc.hash[cur], 1);
-      acc.result.push(acc.hash[cur]);
+  const resultReduce = allGenres.reduce((accumulator, currentValue) => {
+    if (!accumulator.hash[currentValue]) {
+      accumulator.hash[currentValue] = {[currentValue]: 1};
+      accumulator.map.set(accumulator.hash[currentValue], 1);
+      accumulator.result.push(accumulator.hash[currentValue]);
     } else {
-      acc.hash[cur][cur] += 1;
-      acc.map.set(acc.hash[cur], acc.hash[cur][cur]);
+      accumulator.hash[currentValue][currentValue] += 1;
+      accumulator.map.set(accumulator.hash[currentValue], accumulator.hash[currentValue][currentValue]);
     }
-    return acc;
+    return accumulator;
   }, {
     hash: {},
     map: new Map(),
@@ -72,7 +69,6 @@ const getTopGenre = (cards) => {
 };
 
 const getWatchedFilmsForRange = (cards, range) => {
-  let cardsWatched = [];
   const nowDate = dayjs().toDate();
   const currentDate = dayjs(nowDate).format('DD MM YYYY');
   const weekAgo = dayjs(nowDate).set('date', dayjs().get('date') -7);
@@ -81,23 +77,16 @@ const getWatchedFilmsForRange = (cards, range) => {
 
   switch (range) {
     case FilterStatisticRange.ALL:
-      cardsWatched = cards.slice();
-      break;
+      return cards.slice();
     case FilterStatisticRange.TODAY:
-      cardsWatched = cards.slice().filter((card) => dayjs(card.watchingDate).format('DD MM YYYY') === currentDate);
-      break;
+      return cards.slice().filter((card) => dayjs(card.watchingDate).format('DD MM YYYY') === currentDate);
     case FilterStatisticRange.WEEK:
-      cardsWatched = cards.slice().filter((card) => card.watchingDate > weekAgo && card.watchingDate < dayjs().toDate());
-      break;
+      return cards.slice().filter((card) => card.watchingDate > weekAgo && card.watchingDate < dayjs().toDate());
     case FilterStatisticRange.MONTH:
-      cardsWatched = cards.slice().filter((card) => card.watchingDate > monthAgo && card.watchingDate < dayjs().toDate());
-      break;
+      return cards.slice().filter((card) => card.watchingDate > monthAgo && card.watchingDate < dayjs().toDate());
     case FilterStatisticRange.YEAR:
-      cardsWatched = cards.slice().filter((card) => card.watchingDate > yearAgo && card.watchingDate < dayjs().toDate());
-      break;
+      return cards.slice().filter((card) => card.watchingDate > yearAgo && card.watchingDate < dayjs().toDate());
   }
-
-  return cardsWatched;
 };
 
 export {getWatchedFilms, getGenresList, getTopGenre, getWatchedFilmsForRange};

@@ -1131,3 +1131,21 @@ button {
 .shake {
   animation: shake 0.6s;
 }
+
+.toast-item {
+  display: flex;
+  justify-content: center;
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: 2;
+  margin: 0;
+  font-size: 40px;
+  font-weight: bold;
+  color: #fff;
+  min-width: 500px;
+  width: max-content;
+  max-width: 100%;
+  padding: 40px;
+  background-color: #b32f2f;
+}

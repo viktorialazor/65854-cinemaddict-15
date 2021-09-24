@@ -1,10 +1,8 @@
 import dayjs from 'dayjs';
 import relativeTime from 'dayjs/plugin/relativeTime';
-import {MAX_SHORT_DESCRIPTIONS, MINUTES_IN_HOUR, FilterType} from '../const.js';
-import {getRandomNumber} from './common.js';
+import {MAX_SHORT_DESCRIPTIONS, MINUTES_IN_HOUR, ProfileRating, ProfileRatingType, NoFilmsMessage, FilterType} from '../const.js';
 
 const getProfileRating = (cards) => {
-  let profileRating = '';
   let watchedAmount = 0;
 
   cards.forEach((card) => {
@@ -13,17 +11,15 @@ const getProfileRating = (cards) => {
     }
   });
 
-  if (watchedAmount > 0 && watchedAmount < 11) {
-    profileRating = 'Novice';
-  } else if (watchedAmount > 10 && watchedAmount < 20) {
-    profileRating = 'Fan';
-  } else if (watchedAmount > 20){
-    profileRating = 'Movie Buff';
-  } else {
-    profileRating = '';
+  if (watchedAmount > ProfileRating.NOVICE && watchedAmount <= ProfileRating.FAN) {
+    return ProfileRatingType.NOVICE;
+  } else if (watchedAmount > ProfileRating.FAN && watchedAmount <= ProfileRating.MOVIE_BUFF) {
+    return ProfileRatingType.FAN;
+  } else if (watchedAmount > ProfileRating.MOVIE_BUFF){
+    return ProfileRatingType.MOVIE_BUFF;
   }
 
-  return profileRating;
+  return ProfileRatingType.NO_RATING;
 };
 
 const humanizeDate = (date) => {
@@ -31,29 +27,19 @@ const humanizeDate = (date) => {
   return dayjs(date).fromNow();
 };
 
-const getCurrentDate = () => {
-  dayjs.extend(relativeTime);
-  const date = dayjs().toDate();
-  return dayjs(date).fromNow();
-};
-
 const changeFormatDate = (date, format) => dayjs(date).format(format);
 
 const durationFilm = (duration = 0) => {
-  let durationName = '';
-
   if ((duration >= MINUTES_IN_HOUR) && ((duration % MINUTES_IN_HOUR) === 0)) {
     const hours = parseInt((duration / MINUTES_IN_HOUR), 10);
-    durationName = `${hours}h`;
+    return `${hours}h`;
   } else if (duration > MINUTES_IN_HOUR && ((duration % MINUTES_IN_HOUR) !== 0)) {
     const hours = parseInt((duration / MINUTES_IN_HOUR), 10);
     const minutes = duration % MINUTES_IN_HOUR;
-    durationName = `${hours}h ${minutes}m`;
-  } else {
-    durationName = `${duration}m`;
+    return `${hours}h ${minutes}m`;
   }
 
-  return durationName;
+  return `${duration}m`;
 };
 
 const getDurationWatchedFilm = (duration = 0) => {
@@ -64,15 +50,11 @@ const getDurationWatchedFilm = (duration = 0) => {
 };
 
 const generateShortDescription = (description) => {
-  let shortDescription = '';
-
   if (description.length >= MAX_SHORT_DESCRIPTIONS) {
-    shortDescription = `${description.slice(0, (MAX_SHORT_DESCRIPTIONS - 1))}...`;
-  } else {
-    shortDescription = description.slice();
+    return `${description.slice(0, (MAX_SHORT_DESCRIPTIONS - 1))}...`;
   }
 
-  return shortDescription;
+  return description.slice();
 };
 
 const getPopupData = (card, commentsList) => {
@@ -89,44 +71,21 @@ const getPopupData = (card, commentsList) => {
   return [card, filmComments];
 };
 
-const generateCommentAuthor = () => {
-  const authors = ['Tim Macoveev', 'John Doe', 'Mary Beth', 'John Call', 'Eleanor Parker'];
-
-  const randomIndex = getRandomNumber(0, authors.length - 1);
-
-  return authors[randomIndex];
-};
-
-const sortFilmsDate = (filmA, filmB) => dayjs(filmA.release).diff(dayjs(filmB.release));
+const sortFilmsDate = (filmA, filmB) => dayjs(filmB.release).diff(dayjs(filmA.release));
 
 const sortFilmsRating = (filmA, filmB) => filmB.rating - filmA.rating;
 
 const getNoFilmsMessage = (filterType) => {
-  let message = '';
-
   switch(filterType) {
     case FilterType.ALL:
-      message = 'There are no movies in our database';
-      break;
+      return NoFilmsMessage.ALL;
     case FilterType.WATCHLIST:
-      message = 'There are no watchlist movies';
-      break;
+      return NoFilmsMessage.WATCHLIST;
     case FilterType.HISTORY:
-      message = 'There are no watched movies';
-      break;
+      return NoFilmsMessage.HISTORY;
     case FilterType.FAVORITES:
-      message = 'There are no favorites movies';
-      break;
+      return NoFilmsMessage.FAVORITES;
   }
-
-  return message;
 };
 
-const generateWatchingDate = () => {
-  const maxDaysGap = 365;
-  const daysGap = getRandomNumber(-maxDaysGap, 0);
-  const date = dayjs().add(daysGap, 'day').toDate();
-  return date;
-};
-
-export {getProfileRating, humanizeDate, getCurrentDate, changeFormatDate, durationFilm, getDurationWatchedFilm, generateShortDescription, getPopupData, generateCommentAuthor, sortFilmsDate, sortFilmsRating, getNoFilmsMessage, generateWatchingDate};
+export {getProfileRating, humanizeDate, changeFormatDate, durationFilm, getDurationWatchedFilm, generateShortDescription, getPopupData, sortFilmsDate, sortFilmsRating, getNoFilmsMessage};
