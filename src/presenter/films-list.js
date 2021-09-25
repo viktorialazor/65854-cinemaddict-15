@@ -148,13 +148,7 @@ export default class FilmsList {
         this._api.updateCard(updateCard).then((response) => {
           this._cardsModel.updateCard(updateType, response, filterType);
           if (this._mode === 'EDITING') {
-            this._filmPresenter.get(updateCard.id).setPopupScrollPosition(scrollPosition);
-            if(this._filmRatedPresenter.has(updateCard.id)) {
-              this._filmRatedPresenter.get(updateCard.id).setPopupScrollPosition(scrollPosition);
-            }
-            if(this._filmCommentedPresenter.has(updateCard.id)) {
-              this._filmCommentedPresenter.get(updateCard.id).setPopupScrollPosition(scrollPosition);
-            }
+            this._setPopupScroll(updateCard, scrollPosition);
           }
         });
         break;
@@ -168,13 +162,7 @@ export default class FilmsList {
         }
         this._api.addComment(updateCard, updateComment).then((response) => {
           this._cardsModel.addComment(updateType, updateCard, response);
-          this._filmPresenter.get(updateCard.id).setPopupScrollPosition(scrollPosition);
-          if(this._filmRatedPresenter.has(updateCard.id)) {
-            this._filmRatedPresenter.get(updateCard.id).setPopupScrollPosition(scrollPosition);
-          }
-          if(this._filmCommentedPresenter.has(updateCard.id)) {
-            this._filmCommentedPresenter.get(updateCard.id).setPopupScrollPosition(scrollPosition);
-          }
+          this._setPopupScroll(updateCard, scrollPosition);
         })
           .catch(() => {
             this._filmPresenter.get(updateCard.id).setCancelAddComment();
@@ -186,13 +174,7 @@ export default class FilmsList {
             }
             if (!isOnline()) {
               toast('You can\'t add comment offline');
-              this._filmPresenter.get(updateCard.id).setPopupScrollPosition(scrollPosition);
-              if(this._filmRatedPresenter.has(updateCard.id)) {
-                this._filmRatedPresenter.get(updateCard.id).setPopupScrollPosition(scrollPosition);
-              }
-              if(this._filmCommentedPresenter.has(updateCard.id)) {
-                this._filmCommentedPresenter.get(updateCard.id).setPopupScrollPosition(scrollPosition);
-              }
+              this._setPopupScroll(updateCard, scrollPosition);
             }
           });
         break;
@@ -206,13 +188,7 @@ export default class FilmsList {
         }
         this._api.deleteComment(updateComment).then(() => {
           this._cardsModel.deleteComment(updateType, updateCard, updateComment);
-          this._filmPresenter.get(updateCard.id).setPopupScrollPosition(scrollPosition);
-          if(this._filmRatedPresenter.has(updateCard.id)) {
-            this._filmRatedPresenter.get(updateCard.id).setPopupScrollPosition(scrollPosition);
-          }
-          if(this._filmCommentedPresenter.has(updateCard.id)) {
-            this._filmCommentedPresenter.get(updateCard.id).setPopupScrollPosition(scrollPosition);
-          }
+          this._setPopupScroll(updateCard, scrollPosition);
         })
           .catch(() => {
             this._filmPresenter.get(updateCard.id).setCancelDeleteComment();
@@ -224,13 +200,7 @@ export default class FilmsList {
             }
             if (!isOnline()) {
               toast('You can\'t delete comment offline');
-              this._filmPresenter.get(updateCard.id).setPopupScrollPosition(scrollPosition);
-              if(this._filmRatedPresenter.has(updateCard.id)) {
-                this._filmRatedPresenter.get(updateCard.id).setPopupScrollPosition(scrollPosition);
-              }
-              if(this._filmCommentedPresenter.has(updateCard.id)) {
-                this._filmCommentedPresenter.get(updateCard.id).setPopupScrollPosition(scrollPosition);
-              }
+              this._setPopupScroll(updateCard, scrollPosition);
             }
           });
         break;
@@ -288,6 +258,16 @@ export default class FilmsList {
     this._filmPresenter.forEach((presenter) => presenter.resetView());
     this._filmRatedPresenter.forEach((presenter) => presenter.resetView());
     this._filmCommentedPresenter.forEach((presenter) => presenter.resetView());
+  }
+
+  _setPopupScroll(updateCard, scrollPosition) {
+    this._filmPresenter.get(updateCard.id).setPopupScrollPosition(scrollPosition);
+    if(this._filmRatedPresenter.has(updateCard.id)) {
+      this._filmRatedPresenter.get(updateCard.id).setPopupScrollPosition(scrollPosition);
+    }
+    if(this._filmCommentedPresenter.has(updateCard.id)) {
+      this._filmCommentedPresenter.get(updateCard.id).setPopupScrollPosition(scrollPosition);
+    }
   }
 
   _renderSort() {

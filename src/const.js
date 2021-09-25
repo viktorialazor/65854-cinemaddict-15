@@ -53,6 +53,14 @@ const FilterStatisticRange = {
   MONTH: 'month',
   YEAR: 'year',
 };
+const EmojiType = {
+  SMILE: 'smile',
+  SLEEPING: 'sleeping',
+  PUKE: 'puke',
+  ANGRY: 'angry',
+};
+const emojiTypeList = ['smile', 'sleeping', 'puke', 'angry'];
+const sortTypeList = ['default', 'date', 'rating'];
 const AUTHORIZATION = 'Basic F2XxaAt3kFb836A';
 const END_POINT = 'https://15.ecmascript.pages.academy/cinemaddict';
 const STORE_PREFIX = 'cinemaddict-localstorage';
@@ -60,4 +68,4 @@ const STORE_VER = 'v15';
 const STORE_NAME = `${STORE_PREFIX}-${STORE_VER}`;
 const SHOW_TIME = 5000;
 
-export {QUANTITY_CARDS_PER_STEP, QUANTITY_EXTRA_CARDS, MAX_SHORT_DESCRIPTIONS, MINUTES_IN_HOUR, BUTTON_ENTER, ProfileRating, ProfileRatingType, NoFilmsMessage, SortType, UserAction, UpdateType, FilterType, MenuItem, FilterStatisticRange, AUTHORIZATION, END_POINT, STORE_NAME, SHOW_TIME};
+export {QUANTITY_CARDS_PER_STEP, QUANTITY_EXTRA_CARDS, MAX_SHORT_DESCRIPTIONS, MINUTES_IN_HOUR, BUTTON_ENTER, ProfileRating, ProfileRatingType, NoFilmsMessage, SortType, UserAction, UpdateType, FilterType, MenuItem, FilterStatisticRange, EmojiType, emojiTypeList, sortTypeList, AUTHORIZATION, END_POINT, STORE_NAME, SHOW_TIME};

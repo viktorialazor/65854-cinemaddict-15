@@ -1,7 +1,7 @@
 import SmartView from './smart.js';
 import he from 'he';
 import {humanizeDate, changeFormatDate, durationFilm} from '../utils/film.js';
-import {BUTTON_ENTER} from '../const.js';
+import {BUTTON_ENTER, emojiTypeList} from '../const.js';
 
 const createCommentItemTemplate = (commentItem = {}) => {
   const {
@@ -30,6 +30,15 @@ const createCommentItemTemplate = (commentItem = {}) => {
     </li>`);
 };
 
+const createEmojiTemplate = (emoji, isDisabled) => (
+  `<input class="film-details__emoji-item visually-hidden" name="comment-emoji" type="radio" id="emoji-${emoji}" value="${emoji}" ${isDisabled ? 'disabled' : ''}>
+  <label class="film-details__emoji-label" for="emoji-${emoji}">
+  <img src="./images/emoji/${emoji}.png" width="30" height="30" alt="emoji">
+  </label>`
+);
+
+const createCommentEmojiTemplate = (emoji) => (`<img src=./images/emoji/${emoji}.png alt=${emoji} width="70" height="70">`);
+
 const createGenresTemplate = (genre) => (`<span class="film-details__genre">${genre}</span>`);
 
 const createPopupTemplate = (card, comments) => {
@@ -57,11 +66,12 @@ const createPopupTemplate = (card, comments) => {
 
   const filmDuration = durationFilm(duration);
   const filmRelease = changeFormatDate(release, 'D MMMM YYYY');
-  const emoji = commentEmoji ? `<img src=./images/emoji/${commentEmoji}.png alt=${commentEmoji} width="70" height="70">` : '';
+  const emoji = commentEmoji ? createCommentEmojiTemplate(commentEmoji) : '';
   const text = commentMessage ? commentMessage : '';
   const genresList = genres.map((genre) => createGenresTemplate(genre)).join('');
   const genresTitle = genres.length > 1 ? 'Genres' : 'Genre';
   const commentsList = comments.map((comment) => createCommentItemTemplate(comment)).join('');
+  const commentsEmojiList = emojiTypeList.map((emojiItem) => createEmojiTemplate(emojiItem, isCommentDisabled)).join('');
   const amountComments = comments.length;
   const watchlist = isInWatchlist ? 'film-details__control-button--active ' : '';
   const watched = isWatched ? 'film-details__control-button--active ' : '';
@@ -148,25 +158,7 @@ const createPopupTemplate = (card, comments) => {
             </label>
 
             <div class="film-details__emoji-list">
-              <input class="film-details__emoji-item visually-hidden" name="comment-emoji" type="radio" id="emoji-smile" value="smile" ${isCommentDisabled ? 'disabled' : ''}>
-              <label class="film-details__emoji-label" for="emoji-smile">
-                <img src="./images/emoji/smile.png" width="30" height="30" alt="emoji">
-              </label>
-
-              <input class="film-details__emoji-item visually-hidden" name="comment-emoji" type="radio" id="emoji-sleeping" value="sleeping" ${isCommentDisabled ? 'disabled' : ''}>
-              <label class="film-details__emoji-label" for="emoji-sleeping">
-                <img src="./images/emoji/sleeping.png" width="30" height="30" alt="emoji">
-              </label>
-
-              <input class="film-details__emoji-item visually-hidden" name="comment-emoji" type="radio" id="emoji-puke" value="puke" ${isCommentDisabled ? 'disabled' : ''}>
-              <label class="film-details__emoji-label" for="emoji-puke">
-                <img src="./images/emoji/puke.png" width="30" height="30" alt="emoji">
-              </label>
-
-              <input class="film-details__emoji-item visually-hidden" name="comment-emoji" type="radio" id="emoji-angry" value="angry" ${isCommentDisabled ? 'disabled' : ''}>
-              <label class="film-details__emoji-label" for="emoji-angry">
-                <img src="./images/emoji/angry.png" width="30" height="30" alt="emoji">
-              </label>
+              ${commentsEmojiList}
             </div>
           </div>
         </section>
