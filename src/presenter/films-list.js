@@ -186,6 +186,13 @@ export default class FilmsList {
             }
             if (!isOnline()) {
               toast('You can\'t add comment offline');
+              this._filmPresenter.get(updateCard.id).setPopupScrollPosition(scrollPosition);
+              if(this._filmRatedPresenter.has(updateCard.id)) {
+                this._filmRatedPresenter.get(updateCard.id).setPopupScrollPosition(scrollPosition);
+              }
+              if(this._filmCommentedPresenter.has(updateCard.id)) {
+                this._filmCommentedPresenter.get(updateCard.id).setPopupScrollPosition(scrollPosition);
+              }
             }
           });
         break;
@@ -217,6 +224,13 @@ export default class FilmsList {
             }
             if (!isOnline()) {
               toast('You can\'t delete comment offline');
+              this._filmPresenter.get(updateCard.id).setPopupScrollPosition(scrollPosition);
+              if(this._filmRatedPresenter.has(updateCard.id)) {
+                this._filmRatedPresenter.get(updateCard.id).setPopupScrollPosition(scrollPosition);
+              }
+              if(this._filmCommentedPresenter.has(updateCard.id)) {
+                this._filmCommentedPresenter.get(updateCard.id).setPopupScrollPosition(scrollPosition);
+              }
             }
           });
         break;
